@@ -2,57 +2,48 @@ USE food_delivery;
 
 -- ---------- ADD DATA ----------
 
--- Add possible deliver status
-INSERT INTO Delivery_Status (StatusID, CurrentStatus) VALUES (?, ?);
-
 -- Add location
-INSERT INTO Location (LocationID, Longitude, Latitude, Address)
-VALUES (?,?,?,?);
+INSERT INTO Location (Longitude, Latitude, Address)
+VALUES (?,?,?);
 
 -- Add delivery personnel
-INSERT INTO Delivery_Personnel (EmployeeID, DelivererName, PhoneNumber, Email, Capacity)
-VALUES (?, ?, ?, ?, ?);
-
--- Add a customer
-INSERT INTO Customer (CustomerID, CustomerName, LocationID, PhoneNumber, Email, DateOfBirth)
+INSERT INTO Delivery_Personnel (Username, DelivererPassword, DelivererName, PhoneNumber, Email, Capacity)
 VALUES (?, ?, ?, ?, ?, ?);
 
--- Add a business owner
-INSERT INTO Business_Owner (OwnerID, OwnerName, PhoneNumber, Email)
-VALUES (?, ?, ?, ?);
+-- Add a customer
+INSERT INTO Customer (CustomerName, Username, CustomerPassword, LocationID, PhoneNumber, Email, DateOfBirth)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+-- Add an admin
+INSERT INTO DatabaseAdmin (AdminName, Username, AdminPassword)
+VALUES (?, ?, ?);
 
 -- Add a business
-INSERT INTO Business (BusinessID, OwnerID, LocationID, BusinessName, FoodID, PhoneNumber)
+INSERT INTO Business (Username, BusinessPassword, LocationID, BusinessName, FoodID, PhoneNumber)
 VALUES (?, ?, ?, ?, ?, ?);
 
 -- Add a food category
-INSERT INTO Food_Category (FoodID, Category) VALUES (?, ?);
+INSERT INTO Food_Category (Category) VALUES (?);
 
 -- Add a payment Method
-INSERT INTO Payment_Method (PaymentID, PaymentMethod)
-VALUES (?, ?);
+INSERT INTO Payment_Method (PaymentMethod)
+VALUES (?);
 
 -- Add an order
-INSERT INTO Orders (OrderID, CustomerID, BusinessID, PaymentID, OrderDate)
-VALUES (?, ?, ?, ?, ?);
+INSERT INTO Orders (CustomerID, BusinessID, PaymentID, OrderDate)
+VALUES (?, ?, ?, ?);
 
 -- Add a delivery for an order
-INSERT INTO Delivery (DeliveryID, OrderID, EmployeeID, LocationID, StatusID, DeliveryFee) VALUES (?, ?, ?, ?, ?, ?);
+INSERT INTO Delivery (OrderID, EmployeeID, LocationID, StatusID, DeliveryFee) VALUES (?, ?, ?, ?, ?);
 
 -- Add a menu
-INSERT INTO Menu (MenuID, BusinessID, MenuName) VALUES (?, ?, ?);
+INSERT INTO Menu (BusinessID, MenuName) VALUES (?, ?);
 
 -- Add a menu Item
-INSERT INTO Menu_Item (ItemID, MenuID, ItemName, ItemPrice, Availability) VALUES (?, ?, ?, ?, ?);
-
--- Add a category for an item
-INSERT INTO Categories (CategoryID, Category) VALUES (?, ?);
-
--- Assign a category to an item
-INSERT INTO Item_Category (ItemID, CategoryID) VALUES (?, ?);
+INSERT INTO Menu_Item (MenuID, ItemName, ItemPrice, Availability) VALUES (?, ?, ?, ?);
 
 -- Add a nutrient
-INSERT INTO Nutrient_Name (NutrientID, NutrientName) VALUES (?, ?);
+INSERT INTO Nutrient_Name (NutrientName) VALUES (?);
 
 -- Add nutrient info about an item
 INSERT INTO Nutrition_Info (ItemID, NutrientID, Amount) VALUES (?, ?, ?);
@@ -85,6 +76,28 @@ WHERE EmployeeID = ?;
 UPDATE Delivery_Personnel
 SET Capacity = ?
 WHERE EmployeeID = ?;
+-- Username
+UPDATE Delivery_Personnel
+SET Username = ?
+WHERE EmployeeID = ?;
+-- Password
+UPDATE Delivery_Personnel
+SET DelivererPassword = ?
+WHERE EmployeeID = ?;
+
+-- Update info about an admin
+-- Name
+UPDATE DatabaseAdmin
+SET AdminName = ?
+WHERE AdminID = ?;
+-- Username
+UPDATE DatabaseAdmin
+SET Username = ?
+WHERE AdminID = ?;
+-- Password
+UPDATE DatabaseAdmin
+SET AdminPassword = ?
+WHERE AdminID = ?;
 
 -- *** Update info about a customer ***
 -- Name
@@ -99,22 +112,16 @@ WHERE CustomerID = ?;
 UPDATE Customer
 SET PhoneNumber = ?, Email = ?
 WHERE CustomerID = ?;
-
--- *** Update info about a business owner ***
--- Name
-UPDATE Business_Owner
-SET OwnerName = ?
-WHERE OwnerID = ?;
--- Contact info
-UPDATE Business_Owner
-SET PhoneNumber = ?, Email = ?
-WHERE OwnerID = ?;
+-- Username
+UPDATE Customer
+SET Username = ?
+WHERE CustomerID = ?;
+-- Password
+UPDATE Customer
+SET CustomerPassword = ?
+WHERE CustomerID = ?;
 
 -- *** Update info about a business ***
--- Owner
-UPDATE Business
-SET OwnerID = ?
-WHERE BusinessID = ?;
 -- Location
 UPDATE Business
 SET LocationID = ?
@@ -130,6 +137,14 @@ WHERE BusinessID = ?;
 -- Contact info
 UPDATE Business
 SET PhoneNumber = ?
+WHERE BusinessID = ?;
+-- Username
+UPDATE Business
+SET Username = ?
+WHERE BusinessID = ?;
+-- Password
+UPDATE Business
+SET BusinessPassword = ?
 WHERE BusinessID = ?;
 
 -- *** Update a food category ***
@@ -240,10 +255,6 @@ WHERE MenuID = ?;
 -- Delete a menu item (RESTRICT via Order_Item)
 DELETE FROM Menu_Item
 WHERE ItemID = ?;
-
--- Delete a category for an item
-DELETE FROM Item_Category
-WHERE ItemID = ? AND CategoryID = ?;
 
 -- Delete an item nutrient (RESTRICT via constraints)
 DELETE FROM Nutrition_Info
@@ -485,24 +496,6 @@ JOIN Menu M ON M.MenuID = MI.MenuID
 JOIN Business B ON M.BusinessID = B.BusinessID
 WHERE (MI.Availability = True) AND (M.BusinessID = ?)
 ORDER BY MI.ItemPrice;
-
--- Find the owner of a business
-SELECT BO.OwnerName
-FROM Business B
-JOIN Business_Owner BO ON BO.OwnerID = B.OwnerID
-WHERE BusinessID = ?;
-
--- Find information about the owner of a business
-SELECT 
-	B.BusinessID, 
-    B.BusinessName, 
-    B.OwnerID, 
-    BO.OwnerName, 
-    BO.PhoneNumber, 
-    BO.Email
-FROM Business B
-JOIN Business_Owner BO ON BO.OwnerID = B.OwnerID
-WHERE B.OwnerID = ?;
 
 -- Get the items in an order
 SELECT MI.ItemName, OI.Quantity, MI.ItemPrice*OI.Quantity AS TotalPrice
