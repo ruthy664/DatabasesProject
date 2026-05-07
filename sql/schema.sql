@@ -10,6 +10,8 @@ CurrentStatus VARCHAR(30)
 CREATE TABLE Delivery_Personnel(
 EmployeeID INT PRIMARY KEY,
 DelivererName VARCHAR(50) NOT NULL,
+Username VARCHAR(20) NOT NULL,
+DelivererPassword VARCHAR(50) NOT NULL,
 PhoneNumber VARCHAR(30) NOT NULL,
 Email VARCHAR(50) NOT NULL,
 Capacity INT NOT NULL
@@ -25,6 +27,8 @@ Address VARCHAR(50)
 CREATE TABLE Customer(
 CustomerID INT PRIMARY KEY,
 CustomerName VARCHAR(50) NOT NULL,
+Username VARCHAR(20) NOT NULL,
+CustomerPassword VARCHAR(50) NOT NULL,
 LocationID INT NOT NULL,
 PhoneNumber VARCHAR(30) NOT NULL,
 Email VARCHAR(50) NOT NULL,
@@ -40,12 +44,21 @@ CREATE TABLE Food_Category (
 CREATE TABLE Business(
 BusinessID INT PRIMARY KEY,
 BusinessName VARCHAR(50) NOT NULL,
+Username VARCHAR(20) NOT NULL,
+BusinessPassword VARCHAR(50) NOT NULL,
 FoodID INT,
 PhoneNumber VARCHAR(30) NOT NULL,
 LocationID INT NOT NULL,
 FOREIGN KEY (FoodID) REFERENCES Food_Category(FoodID)
 ON DELETE RESTRICT,
 FOREIGN KEY (LocationID) REFERENCES Location(LocationID)
+);
+
+CREATE TABLE Admin(
+AdminID INT PRIMARY KEY,
+AdminName VARCHAR(50) NOT NULL,
+Username VARCHAR(20) NOT NULL,
+AdminPassword VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Payment_Method(
