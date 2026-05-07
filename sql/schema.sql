@@ -32,13 +32,6 @@ DateOfBirth date,
 FOREIGN KEY (LocationID) REFERENCES Location(LocationID)
 );
 
-CREATE TABLE Business_Owner(
-OwnerID INT PRIMARY KEY,
-OwnerName VARCHAR(50) NOT NULL,
-PhoneNumber VARCHAR(30) NOT NULL,
-Email VARCHAR(50) NOT NULL
-);
-
 CREATE TABLE Food_Category (
 	FoodID INT PRIMARY KEY,
 	Category VARCHAR(30) UNIQUE NOT NULL
@@ -46,13 +39,10 @@ CREATE TABLE Food_Category (
 
 CREATE TABLE Business(
 BusinessID INT PRIMARY KEY,
-OwnerID INT NOT NULL,
 BusinessName VARCHAR(50) NOT NULL,
 FoodID INT,
 PhoneNumber VARCHAR(30) NOT NULL,
 LocationID INT NOT NULL,
-FOREIGN KEY (OwnerID) REFERENCES Business_Owner(OwnerID)
-ON DELETE RESTRICT,
 FOREIGN KEY (FoodID) REFERENCES Food_Category(FoodID)
 ON DELETE RESTRICT,
 FOREIGN KEY (LocationID) REFERENCES Location(LocationID)
@@ -108,19 +98,6 @@ ItemPrice DECIMAL(10,2) NOT NULL,
 Availability BOOLEAN,
 FOREIGN KEY (MenuID) REFERENCES Menu(MenuID)
 ON DELETE CASCADE
-);
-
-CREATE TABLE Categories(
-	CategoryID INT PRIMARY KEY,
-	Category VARCHAR(30) UNIQUE NOT NULL
-);
-
-CREATE TABLE Item_Category(
-	ItemID INT NOT NULL,
-	CategoryID INT NOT NULL,
-	PRIMARY KEY (ItemID, CategoryID),
-FOREIGN KEY (ItemID) REFERENCES Menu_Item(ItemID),
-FOREIGN KEY (CategoryID) REFERENCES Categories (CategoryID)
 );
 
 CREATE TABLE Nutrient_Name(
