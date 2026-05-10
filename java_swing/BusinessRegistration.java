@@ -26,7 +26,7 @@ public class BusinessRegistration extends JFrame {
 
     public BusinessRegistration() {
         // Basic window setup
-        window = new JFrame("Business Login");
+        window = new JFrame("Business Registration");
 
         // Close operation when the window is closed
 
