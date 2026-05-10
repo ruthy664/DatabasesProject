@@ -36,21 +36,14 @@ DateOfBirth date,
 FOREIGN KEY (LocationID) REFERENCES Location(LocationID)
 );
 
-CREATE TABLE Food_Category (
-	FoodID INT PRIMARY KEY AUTO_INCREMENT,
-	Category VARCHAR(30) UNIQUE NOT NULL
-);
-
 CREATE TABLE Business(
 BusinessID INT PRIMARY KEY AUTO_INCREMENT,
 BusinessName VARCHAR(50) NOT NULL,
 Username VARCHAR(20) NOT NULL,
 BusinessPassword VARCHAR(50) NOT NULL,
-FoodID INT,
+Cuisine VARCHAR(50),
 PhoneNumber VARCHAR(30) NOT NULL,
 LocationID INT NOT NULL,
-FOREIGN KEY (FoodID) REFERENCES Food_Category(FoodID)
-ON DELETE RESTRICT,
 FOREIGN KEY (LocationID) REFERENCES Location(LocationID)
 );
 
