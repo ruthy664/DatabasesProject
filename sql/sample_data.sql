@@ -70,25 +70,17 @@ INSERT INTO DatabaseAdmin (AdminName, Username, AdminPassword) VALUES
 ('Ezra Bridger', 'ebridger', 'password123'),
 ('Sabine Wren', 'swren', 'databaseadmin');
 
-INSERT INTO Food_Category (Category) VALUES
-('American'),
-('Pizza'),
-('Healthy'),
-('Cafe'),
-('Chinese'),
-('Fast Food');
-
-INSERT INTO Business(Username, BusinessPassword, LocationID, BusinessName, FoodID, PhoneNumber) VALUES
-('bbites', 'baltimore', 5, 'Baltimore Bites', 0, '410-555-2001'),
-('hgrill', 'harbor', 12, 'Harbor Grill', 0, '410-555-2002'),
-('ucrust', 'urban', 3, 'Urban Crust Pizza', 2, '410-555-2003'),
-('gbowl', 'green', 9, 'Green Bowl Kitchen', 3, '410-555-2004'),
-('mstreet','maple', 1, 'Maple Street Cafe', 4, '410-555-2005'),
-('cwok', 'city', 14, 'City Wok Express', 5, '410-555-2006'),
+INSERT INTO Business(Username, BusinessPassword, LocationID, BusinessName, Cuisine, PhoneNumber) VALUES
+('bbites', 'baltimore', 5, 'Baltimore Bites', "American", '410-555-2001'),
+('hgrill', 'harbor', 12, 'Harbor Grill', "American", '410-555-2002'),
+('ucrust', 'urban', 3, 'Urban Crust Pizza', "Pizza", '410-555-2003'),
+('gbowl', 'green', 9, 'Green Bowl Kitchen', "Healthy", '410-555-2004'),
+('mstreet','maple', 1, 'Maple Street Cafe', "Cafe", '410-555-2005'),
+('cwok', 'city', 14, 'City Wok Express', "Chinese", '410-555-2006'),
 ('sdeli', 'sunrise', 7, 'Sunrise Deli', NULL, '410-555-2007'),
-('ocafe', 'oak', 10, 'Oak & Oven Cafe', 4, '410-555-2008'),
-('cburger', 'capital', 0, 'Capital Burger House', 0, '410-555-2009'),
-('bharbor', 'blue', 11, 'Blue Harbor Sushi', 5, '410-555-2010');
+('ocafe', 'oak', 10, 'Oak & Oven Cafe', "Cafe", '410-555-2008'),
+('cburger', 'capital', 0, 'Capital Burger House', "American", '410-555-2009'),
+('bharbor', 'blue', 11, 'Blue Harbor Sushi', "Chinese", '410-555-2010');
 
 INSERT INTO Payment_Method(PaymentMethod) VALUES
 ('card'),
