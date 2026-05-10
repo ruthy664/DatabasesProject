@@ -36,22 +36,22 @@ INSERT INTO Delivery_Personnel (DelivererName, Username, DelivererPassword, Phon
 ('Mason Brooks', 'mbrooks', 'abrookisabodyofwater', '571-555-2211', 'mason.brooks@delivery.com', 7),
 ('Olivia Bennett', 'obennett', 'oliviabenn', '703-555-4455', 'olivia.bennett@delivery.com', 10);
 
-INSERT INTO Location (Longitude, Latitude, Address) VALUES
-(-76.610000, 39.370000, '12 Parkview Ave, Apt 3A'),
-(-76.612200, 39.372100, '45 Maple Street'),
-(-76.608500, 39.369300, '118 Cedar Lane'),
-(-76.615000, 39.371200, '22 Washington Blvd'),
-(-76.609300, 39.373500, '9 Elm Court'),
-(-76.611800, 39.368900, '300 Liberty Road, Suite 5'),
-(-76.607900, 39.370800, '77 Pine Street, Apt 2B'),
-(-76.613600, 39.369800, '5 Oak Avenue'),
-(-76.610700, 39.372900, '88 Main Street'),
-(-76.606500, 39.371600, '14 Commerce Street, Office 210'),
-(-76.614200, 39.370500, '250 Greenway Blvd'),
-(-76.608900, 39.368500, '19 Hilltop Road'),
-(-76.612900, 39.373200, '6 Riverstone Drive'),
-(-76.607200, 39.369900, '41 Broadway Street, Apt 1C'),
-(-76.611000, 39.371800, '99 Charles Street');
+INSERT INTO Location (Address) VALUES
+('12 Parkview Ave, Apt 3A'),
+('45 Maple Street'),
+('118 Cedar Lane'),
+('22 Washington Blvd'),
+('9 Elm Court'),
+('300 Liberty Road, Suite 5'),
+('77 Pine Street, Apt 2B'),
+('5 Oak Avenue'),
+('88 Main Street'),
+('14 Commerce Street, Office 210'),
+('250 Greenway Blvd'),
+('19 Hilltop Road'),
+('6 Riverstone Drive'),
+('41 Broadway Street, Apt 1C'),
+('99 Charles Street');
 
 INSERT INTO Customer (CustomerName, Username, CustomerPassword, LocationID, PhoneNumber, Email, DateOfBirth) VALUES
 ('Emily Carter', 'ecarter', 'password', 3, '410-555-0182', 'emily.carter@gmail.com', '1998-06-14'),
