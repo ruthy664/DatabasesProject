@@ -113,7 +113,7 @@ public class CustomerRegistration extends JFrame {
         String dateOfBirth = dobField.getText();
 
         // Simple validation
-        if (name.isEmpty() || username.isEmpty() || password.isEmpty() || number.isEmpty() || location.isEmpty()) {
+        if (name.isEmpty() || username.isEmpty() || password.isEmpty() || number.isEmpty() || location.isEmpty() || email.isEmpty()) {
             JOptionPane.showMessageDialog(window, "Missing one or more required fields");
             return;
         }
