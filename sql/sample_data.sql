@@ -2,13 +2,11 @@ USE food_delivery;
 SET FOREIGN_KEY_CHECKS = 0;
 
 TRUNCATE TABLE Order_Item;
-TRUNCATE TABLE Nutrition_Info;
 TRUNCATE TABLE Menu_Item;
 TRUNCATE TABLE Menu;
 TRUNCATE TABLE Delivery;
 TRUNCATE TABLE Orders;
 TRUNCATE TABLE DatabaseAdmin;
-TRUNCATE TABLE Nutrient_Name;
 TRUNCATE TABLE Delivery_Status;
 TRUNCATE TABLE Delivery_Personnel;
 TRUNCATE TABLE Payment_Method;
@@ -167,51 +165,6 @@ INSERT INTO Menu_Item (MenuID, ItemName, ItemPrice, Availability) VALUES
 (13, 'BBQ Chicken Pizza', 11.99, TRUE),
 (14, 'Burger Combo', 12.99, FALSE),
 (16, 'Sushi Roll', 13.99, TRUE);
-
-INSERT INTO Nutrient_Name (NutrientName) VALUES
-('Calories'),
-('Protein'),
-('Carbs'),
-('Fiber'),
-('Fats');
-
-INSERT INTO Nutrition_Info (ItemID, NutrientID, Amount) VALUES
--- Item 0: Cheeseburger
-(0, 0, 540),
-(0, 1, 28),
-(0, 2, 40),
-(0, 3, 2),
-(0, 4, 32),
--- Item 1: Fries
-(1, 0, 310),
-(1, 1, 4),
-(1, 2, 41),
-(1, 3, 3),
-(1, 4, 15),
--- Item 2: Chicken Sandwich
-(2, 0, 480),
-(2, 1, 32),
-(2, 2, 38),
-(2, 3, 2),
-(2, 4, 18),
--- Item 3: Pepperoni Pizza Slice
-(3, 0, 290),
-(3, 1, 12),
-(3, 2, 34),
-(3, 3, 2),
-(3, 4, 12),
--- Item 4: Cheese Pizza Slice
-(4, 0, 270),
-(4, 1, 11),
-(4, 2, 33),
-(4, 3, 2),
-(4, 4, 10),
--- Item 5: Garlic Knots
-(5, 0, 260),
-(5, 1, 7),
-(5, 2, 38),
-(5, 3, 2),
-(5, 4, 9);
 
 INSERT INTO Order_Item (OrderID, ItemID, Quantity) VALUES
 (0, 0, 1),
