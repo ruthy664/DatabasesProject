@@ -8,8 +8,8 @@ public class BusinessUI extends JFrame {
 
     // Database connection details
     String url = "jdbc:mysql://localhost:3306/food_delivery";
-    String user = "root";
-    String password = "Pleasework4!";
+    String user = "username"; // Replace this with your database username
+    String password = "password"; // Replace this with your database password
 
     // Input fields and output area
     JTextField nameField, majorField;
