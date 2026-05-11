@@ -8,8 +8,8 @@ public class BusinessLogin extends JFrame {
 
     // Database connection details
     String url = "jdbc:mysql://localhost:3306/food_delivery";
-    String user = ""; // CHANGE THIS TO YOUR DATABASE USERNAME
-    String password = ""; // CHANGE THIS TO YOUR DATABASE PASSWORD
+    String user = "root"; // CHANGE THIS TO YOUR DATABASE USERNAME
+    String password = "password"; // CHANGE THIS TO YOUR DATABASE PASSWORD
 
     JTextField usernameField;
     JTextField passwordField;
@@ -110,7 +110,7 @@ public class BusinessLogin extends JFrame {
            if(rs.next()) {
            if(rs.getString("BusinessPassword").equals(password)) {
                 window.setVisible(false);
-                new BusinessUI();
+                new BusinessUI(username);
            } else {
                 JOptionPane.showMessageDialog(window, "Incorrect Password");
            }

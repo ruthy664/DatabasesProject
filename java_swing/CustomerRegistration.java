@@ -4,7 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.MaskFormatter;
 
-public class BusinessRegistration extends JFrame {
+public class CustomerRegistration extends JFrame {
     String url = "jdbc:mysql://localhost:3306/food_delivery";
     String user = "root"; // Put your database's username and password here
     String password = "password"; // Put your database's username and password here
@@ -19,14 +19,15 @@ public class BusinessRegistration extends JFrame {
     JTextField nameField;
     JTextField usernameField;
     JTextField passwordField;
-    JTextField cuisineField;
     JTextField locationField;
     JFormattedTextField numberField;
+    JTextField emailField;
+    JFormattedTextField dobField;
 
 
-    public BusinessRegistration() {
+    public CustomerRegistration() {
         // Basic window setup
-        window = new JFrame("Business Registration");
+        window = new JFrame("Customer Registration");
 
         // Close operation when the window is closed
 
@@ -34,6 +35,7 @@ public class BusinessRegistration extends JFrame {
         
         // Set the initial size of the window
         window.setSize(500, 400);
+        window.setLocationRelativeTo(null);
         window.setLayout(new BorderLayout());
 
         // Need to include 6 columns
@@ -44,7 +46,7 @@ public class BusinessRegistration extends JFrame {
         registrationFields.setLayout(new GridLayout(7,2, 10, 30));
         registrationFields.setBorder(new EmptyBorder(50, 10, 10, 10));
 
-        registrationFields.add(new JLabel("Business Name:"));
+        registrationFields.add(new JLabel("Customer Name:"));
         nameField = new JTextField();
         nameField.setPreferredSize(new Dimension(200, 30));
         registrationFields.add(nameField);
@@ -59,16 +61,20 @@ public class BusinessRegistration extends JFrame {
         passwordField.setPreferredSize(new Dimension(200, 30));
         registrationFields.add(passwordField);
 
-        registrationFields.add(new JLabel("Cuisine:"));
-        cuisineField = new JTextField();
-        cuisineField.setPreferredSize(new Dimension(200, 30));
-        registrationFields.add(cuisineField);
+        registrationFields.add(new JLabel("Email:"));
+        emailField = new JTextField();
+        emailField.setPreferredSize(new Dimension(200, 30));
+        registrationFields.add(emailField);
 
         registrationFields.add(new JLabel("Phone Number:"));
         numberField = new JFormattedTextField(createFormatter("###-###-####"));
         numberField.setPreferredSize(new Dimension(200, 30));
-        
         registrationFields.add(numberField);
+
+        registrationFields.add(new JLabel("Date of birth: "));
+        dobField = new JFormattedTextField(createFormatter("####-##-##"));
+        dobField.setPreferredSize(new Dimension(200, 30));
+        registrationFields.add(dobField);
 
         // FIGURE OUT THIS PART
         registrationFields.add(new JLabel("Location/Address:"));
@@ -101,21 +107,25 @@ public class BusinessRegistration extends JFrame {
         String name = nameField.getText();
         String username = usernameField.getText();
         String password = passwordField.getText();
-        String cuisine = cuisineField.getText();
+        String email = emailField.getText();
         String number = numberField.getText();
         String location = locationField.getText();
+        String dateOfBirth = dobField.getText();
 
         // Simple validation
         if (name.isEmpty() || username.isEmpty() || password.isEmpty() || number.isEmpty() || location.isEmpty()) {
-            JOptionPane.showMessageDialog(window, "Name, username, password, location, and phone number are required");
+            JOptionPane.showMessageDialog(window, "Missing one or more required fields");
             return;
         }
 
         // Checking to see if the username already exists -- cannot reuse usernames
-        try (Connection conn = getConn(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT Username FROM Business")) {
+        try (
+            Connection conn = getConn();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT Username FROM Customer")) {
             boolean found = false;
             // Loop through result rows
-            while (!false && rs.next()) {
+            while (rs.next()) {
                if(rs.getString("Username").equals(username)) {
                     found = true;
                }
@@ -138,17 +148,19 @@ public class BusinessRegistration extends JFrame {
             ps.setString(1, location);
             ps.executeUpdate();      // Run INSERT
 
-         JOptionPane.showMessageDialog(window, "Added: " + location);
+            JOptionPane.showMessageDialog(window, "Added: " + location);
 
-            // Get the LocationID so it can be used when creating the restaurant
-            try (Connection conn2 = getConn(); PreparedStatement ps2 = conn2.prepareStatement("SELECT LocationID FROM Location WHERE Address = ?")) {
+            // Get the LocationID so it can be used when creating the customer address
+            try (
+                Connection conn2 = getConn();
+                PreparedStatement ps2 = conn2.prepareStatement("SELECT LocationID FROM Location WHERE Address = ?")) {
             
-            ps2.setString(1, location);
-            ResultSet rs = ps2.executeQuery();
-            if(rs.next()) {
-                locationID = rs.getInt(1);
+                ps2.setString(1, location);
+                ResultSet rs = ps2.executeQuery();
+                if(rs.next()) {
+                    locationID = rs.getInt(1);
                 }
-            
+    
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(window, ex);
             }
@@ -159,14 +171,15 @@ public class BusinessRegistration extends JFrame {
 
         // Create restaurant
         try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO Business(BusinessName, Username, BusinessPassword, Cuisine, PhoneNumber, LocationID) VALUES (?, ?, ?, ?, ?, ?)")) {
+                "INSERT INTO Customer(CustomerName, Username, CustomerPassword, LocationID, PhoneNumber, Email, DateOfBirth) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
 
             ps.setString(1, name);
             ps.setString(2, username);
             ps.setString(3, password);
-            ps.setString(4, cuisine);
+            ps.setInt(4, locationID);
             ps.setString(5, number);
-            ps.setInt(6, locationID);
+            ps.setString(6, email);
+            ps.setString(7, dateOfBirth);
             ps.executeUpdate();      // Run INSERT
 
          JOptionPane.showMessageDialog(window, "Added: " + name);
@@ -190,10 +203,10 @@ public class BusinessRegistration extends JFrame {
         System.exit(-1);
     }
     return formatter;
-}
+    }
 
     
 
-    
 
 }
+
