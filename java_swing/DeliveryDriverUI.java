@@ -9,7 +9,7 @@ public class DeliveryDriverUI extends JFrame {
     // Database connection details
     String url = "jdbc:mysql://localhost:3306/food_delivery";
     String user = "root"; // Replace this with your database username
-    String password = "Famislife1221!!"; // Replace this with your database password
+    String password = "password"; // Replace this with your database password
 
     // Input fields and output area
     JTextField nameField, majorField;
@@ -23,8 +23,6 @@ public class DeliveryDriverUI extends JFrame {
         String delivererUsername = username;
         // Basic window setup
         window = new JFrame("Delivery Service");
-
-        // Close operation when the window is closed
 
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Close operation when the window is closed
 
@@ -42,12 +40,12 @@ public class DeliveryDriverUI extends JFrame {
 
         JPanel deliveryButtons = new JPanel(new GridLayout(1, 4, 10, 0));
         // all and accepted will be at the top in deliveries tab
-        JButton viewDeliveriesButton = new JButton("View All Deliveries");
+        JButton viewDeliveriesButton = new JButton("View Unclaimed Deliveries");
         JButton viewAcceptedDeliveriesButton = new JButton("View Accepted Deliveries");
         JButton viewPreviousDeliveriesButton = new JButton("View Previous Deliveries");
 
         // for updating delivery status
-        JButton updateButton = new JButton("Update Delivery Status");
+
         // status is default available
         // delivery driver can accept a delivery order (mark as accepted)
         // once marked as accepted, the delivery driver's id is attached to the delivery
@@ -60,8 +58,6 @@ public class DeliveryDriverUI extends JFrame {
         deliveryButtons.add(viewAcceptedDeliveriesButton);
         deliveryButtons.add(viewPreviousDeliveriesButton);
 
-        deliveryButtons.add(updateButton);
-
         page1.add(deliveryButtons, BorderLayout.NORTH);
 
         JTextArea deliveriesOutput = new JTextArea();
@@ -71,6 +67,8 @@ public class DeliveryDriverUI extends JFrame {
         // allow user to search by delivery id?
         updateInput.add(new JLabel("DeliveryID:"));
         JTextField idField = new JTextField();
+        idField.setPreferredSize(new Dimension(50, 30));
+        idField.setColumns(10);
         updateInput.add(idField);
         JButton acceptButton = new JButton("Accept Delivery");
         updateInput.add(acceptButton);
@@ -122,7 +120,6 @@ public class DeliveryDriverUI extends JFrame {
 
     }
 
-    // ---------- Create a Database Connection ----------
     private Connection getConn() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver"); // Load MySQL driver
         return DriverManager.getConnection(url, user, password);
@@ -152,19 +149,32 @@ public class DeliveryDriverUI extends JFrame {
 
         try (Connection conn = getConn();
                 PreparedStatement ps = conn.prepareStatement(
-                        "SELECT D.DeliveryID, D.OrderID, D.DeliveryFee, DS.StatusName " +
+                        "SELECT D.DeliveryID, D.OrderID, D.DeliveryFee, O.StatusID " +
                                 "FROM Delivery D " +
-                                "JOIN DeliveryStatus DS ON DS.StatusID = D.StatusID " +
-                                "WHERE DS.StatusName = 'Available'")) {
+                                "JOIN Orders O ON O.OrderID = D.OrderID " +
+                                "WHERE O.StatusID = 3 AND D.EmployeeID is null")) {
 
             ResultSet rs = ps.executeQuery();
             // Loop through result rows
             while (rs.next()) {
+
+                int statusID = rs.getInt("StatusID");
+
+                String statusText = switch (statusID) {
+                    case -1 -> "Canceled";
+                    case 0 -> "Unplaced";
+                    case 1 -> "Placed";
+                    case 2 -> "Accepted";
+                    case 3 -> "In Progress";
+                    case 4 -> "In Transit";
+                    case 5 -> "Arrived";
+                    default -> "Unknown";
+                };
                 deliveriesOutput.append(
                         "DeliveryID: " + rs.getInt("DeliveryID") +
                                 " | Order ID: " + rs.getInt("OrderID") +
                                 " | Fee: $" + rs.getDouble("DeliveryFee") +
-                                " | Status: " + rs.getString("StatusName") + "\n");
+                                " | Status: " + statusText + "\n");
                 // will display each order in this format
             }
 
@@ -179,26 +189,39 @@ public class DeliveryDriverUI extends JFrame {
 
         try (Connection conn = getConn();
                 PreparedStatement ps = conn.prepareStatement(
-                        "SELECT D.DeliveryID, D.OrderID, D.DeliveryFee, DS.StatusName " +
+                        "SELECT D.DeliveryID, D.OrderID, D.DeliveryFee, O.StatusID " +
                                 "FROM Delivery D " +
-                                "JOIN DeliveryStatus DS ON DS.StatusID = D.StatusID " +
-                                "WHERE DS.StatusName = 'Available' AND D.EmployeeID = ?")) {
+                                "JOIN Orders O ON O.OrderID = D.OrderID " +
+                                "WHERE O.StatusID = 2 AND D.EmployeeID = ?")) {
 
             ps.setInt(1, employeeID(username));
             ResultSet rs = ps.executeQuery();
-            // Loop through result rows
+
             while (rs.next()) {
+
+                int statusID = rs.getInt("StatusID");
+
+                String statusText = switch (statusID) {
+                    case -1 -> "Canceled";
+                    case 0 -> "Unplaced";
+                    case 1 -> "Placed";
+                    case 2 -> "Accepted";
+                    case 3 -> "In Progress";
+                    case 4 -> "In Transit";
+                    case 5 -> "Arrived";
+                    default -> "Unknown";
+                };
                 deliveriesOutput.append(
                         "DeliveryID: " + rs.getInt("DeliveryID") +
                                 " | Order ID: " + rs.getInt("OrderID") +
                                 " | Fee: $" + rs.getDouble("DeliveryFee") +
-                                " | Status: " + rs.getString("StatusName") + "\n");
-                // will display each order in this format
+                                " | Status: " + statusText + "\n");
+
             }
 
             if (deliveriesOutput.getText().isEmpty()) {
-            deliveriesOutput.setText("No accepted deliveries.");
-        }
+                deliveriesOutput.setText("No accepted deliveries.");
+            }
 
         } catch (Exception ex) {
             deliveriesOutput.setText(ex.getMessage());
@@ -210,26 +233,38 @@ public class DeliveryDriverUI extends JFrame {
 
         try (Connection conn = getConn();
                 PreparedStatement ps = conn.prepareStatement(
-                        "SELECT D.DeliveryID, D.OrderID, D.DeliveryFee, DS.StatusName " +
+                        "SELECT D.DeliveryID, D.OrderID, D.DeliveryFee, O.StatusID " +
                                 "FROM Delivery D " +
-                                "JOIN DeliveryStatus DS ON DS.StatusID = D.StatusID " +
-                                "WHERE DS.StatusName = 'Delivered' AND D.EmployeeID = ?")) {
+                                "JOIN Orders O ON O.OrderID = D.OrderID " +
+                                "WHERE O.StatusID = 5 AND D.EmployeeID = ?")) {
 
             ps.setInt(1, employeeID(username));
             ResultSet rs = ps.executeQuery();
-            // Loop through result rows
+
             while (rs.next()) {
+
+                int statusID = rs.getInt("StatusID");
+
+                String statusText = switch (statusID) {
+                    case -1 -> "Canceled";
+                    case 0 -> "Unplaced";
+                    case 1 -> "Placed";
+                    case 2 -> "Accepted";
+                    case 3 -> "In Progress";
+                    case 4 -> "In Transit";
+                    case 5 -> "Arrived";
+                    default -> "Unknown";
+                };
                 deliveriesOutput.append(
                         "DeliveryID: " + rs.getInt("DeliveryID") +
                                 " | Order ID: " + rs.getInt("OrderID") +
                                 " | Fee: $" + rs.getDouble("DeliveryFee") +
-                                " | Status: " + rs.getString("StatusName") + "\n");
-                // will display each order in this format
+                                " | Status: " + statusText + "\n");
             }
 
             if (deliveriesOutput.getText().isEmpty()) {
-            deliveriesOutput.setText("No previous deliveries.");
-        }
+                deliveriesOutput.setText("No previous deliveries.");
+            }
 
         } catch (Exception ex) {
             deliveriesOutput.setText(ex.getMessage());
@@ -252,11 +287,12 @@ public class DeliveryDriverUI extends JFrame {
         try (Connection conn = getConn();
                 PreparedStatement ps = conn.prepareStatement(
                         "SELECT D.DeliveryID FROM Delivery D " +
-                                "JOIN DeliveryStatus DS ON DS.StatusID = D.StatusID " +
-                                "WHERE DS.StatusName = 'Available' AND D.DeliveryID = ?")) {
+                                "JOIN ORDERS O ON O.OrderID = D.OrderID " +
+                                "WHERE O.StatusID = 3 AND D.DeliveryID = ?")) {
 
             ps.setInt(1, deliveryID);
             ResultSet rs = ps.executeQuery();
+
             if (!rs.next()) {
                 JOptionPane.showMessageDialog(window, "That DeliveryID doesn't exist or is no longer available.");
                 return;
@@ -268,11 +304,22 @@ public class DeliveryDriverUI extends JFrame {
         }
 
         // assigns driver and updates status
+
         try (Connection conn = getConn();
                 PreparedStatement ps = conn.prepareStatement(
-                        "UPDATE Delivery SET StatusID = (SELECT StatusID FROM Delivery_Status WHERE StatusName = 'Accepted'), "
-                                +
-                                "EmployeeID = ? WHERE DeliveryID = ?")) {
+                        "UPDATE Orders SET StatusID = 2 WHERE OrderID = (SELECT OrderID FROM Delivery WHERE DeliveryID = ?)")) {
+
+            ps.setInt(1, deliveryID);
+            ps.executeUpdate();
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex.getMessage());
+            return;
+        }
+
+        try (Connection conn = getConn();
+                PreparedStatement ps = conn.prepareStatement(
+                        "UPDATE Delivery SET EmployeeID = ? WHERE DeliveryID = ? ")) {
 
             ps.setInt(1, employeeID(username));
             ps.setInt(2, deliveryID);
