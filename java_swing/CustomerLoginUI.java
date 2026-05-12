@@ -145,7 +145,7 @@ public class CustomerLoginUI extends JFrame {
                         ResultSet rs2 = ps2.executeQuery();
                         if (rs2.next()) {
                             int customerID = rs2.getInt("CustomerID");
-                            RestaurantSelectionUI r = new RestaurantSelectionUI(customerID);
+                            CustomerRestaurantSelectionUI r = new CustomerRestaurantSelectionUI(customerID);
                             r.setVisible(true);
                         }
                     } catch (Exception ex) {
@@ -169,7 +169,7 @@ public class CustomerLoginUI extends JFrame {
      */
     private void registerCustomer() {
         window.setVisible(false);
-        new CustomerRegistration();
+        new CustomerRegistrationUI();
     }
 
 }

@@ -117,7 +117,7 @@ public class CustomerRestaurantBrowseUI extends JFrame {
                 }
             }
             window.setVisible(false);
-            RestaurantSelectionUI r = new RestaurantSelectionUI(customerID);
+            CustomerRestaurantSelectionUI r = new CustomerRestaurantSelectionUI(customerID);
             r.setVisible(true);
         });
 
