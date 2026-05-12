@@ -64,7 +64,7 @@ public class CustomerViewRestaurantUI extends JFrame {
     if (activeOrderID != -1) {
         try (Connection conn = getConn();
              PreparedStatement ps = conn.prepareStatement(
-                "UPDATE Orders SET Status = -1 WHERE OrderID = ? AND Status = 0")) {
+                "UPDATE Orders SET StatusID = -1 WHERE OrderID = ? AND StatusID = 0")) {
             ps.setInt(1, activeOrderID);
             ps.executeUpdate();
         } catch (Exception ex) {
@@ -80,7 +80,7 @@ switchBtn.addActionListener(e -> {
     if (activeOrderID != -1) {
         try (Connection conn = getConn();
              PreparedStatement ps = conn.prepareStatement(
-                "UPDATE Orders SET Status = -1 WHERE OrderID = ? AND Status = 0")) {
+                "UPDATE Orders SET StatusID = -1 WHERE OrderID = ? AND StatusID = 0")) {
             ps.setInt(1, activeOrderID);
             ps.executeUpdate();
         } catch (Exception ex) {
@@ -132,7 +132,7 @@ switchBtn.addActionListener(e -> {
 private int getOrCreateOrder() {
     try (Connection conn = getConn();
          PreparedStatement ps = conn.prepareStatement(
-            "SELECT OrderID FROM Orders WHERE CustomerID = ? AND BusinessID = ? AND Status = 0 LIMIT 1")) {
+            "SELECT OrderID FROM Orders WHERE CustomerID = ? AND BusinessID = ? AND StatusID = 0 LIMIT 1")) {
         ps.setInt(1, customerID);
         ps.setInt(2, businessID);
         ResultSet rs = ps.executeQuery();
@@ -147,7 +147,7 @@ private int getOrCreateOrder() {
     // Create order with placeholder PaymentID, will be updated at checkout
     try (Connection conn = getConn();
          PreparedStatement ps = conn.prepareStatement(
-            "INSERT INTO Orders (CustomerID, BusinessID, PaymentID, OrderDate, Status) VALUES (?, ?, 1, NOW(), 0)",
+            "INSERT INTO Orders (CustomerID, BusinessID, PaymentID, OrderDate, StatusID) VALUES (?, ?, 1, NOW(), 0)",
             PreparedStatement.RETURN_GENERATED_KEYS)) {
         ps.setInt(1, customerID);
         ps.setInt(2, businessID);

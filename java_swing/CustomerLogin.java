@@ -53,18 +53,25 @@ public class CustomerLogin extends JFrame {
         JButton loginButton = new JButton("Login");
         JButton registerButton = new JButton("Register");
         
+        JButton backButton = new JButton("Back");
+
         loginPageButtons.add(loginButton);
         loginPageButtons.add(registerButton);
-        
+        loginPageButtons.add(backButton);
+
         window.add(loginPageButtons, BorderLayout.SOUTH);
 
-        
         window.pack();
-        window.setVisible(true);   
+        window.setVisible(true);
 
         // ---------- Button Click Actions ----------
         loginButton.addActionListener(e -> loginUser());
         registerButton.addActionListener(e -> registerCustomer());
+
+        backButton.addActionListener(e -> {
+            window.setVisible(false);
+            new LaunchPage();
+        });
     }
 
     // ---------- Create a Database Connection ----------

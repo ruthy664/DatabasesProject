@@ -103,7 +103,7 @@ public class CustomerCartUI {
 
             try (Connection conn = getConn();
                  PreparedStatement ps = conn.prepareStatement(
-                    "UPDATE Orders SET Status = 1, PaymentID = ? WHERE OrderID = ?")) {
+                    "UPDATE Orders SET StatusID = 1, PaymentID = ? WHERE OrderID = ?")) {
                 ps.setInt(1, paymentID);
                 ps.setInt(2, activeOrderID);
                 ps.executeUpdate();
@@ -132,7 +132,7 @@ public class CustomerCartUI {
             if (confirm == JOptionPane.YES_OPTION) {
                 try (Connection conn = getConn();
                      PreparedStatement ps = conn.prepareStatement(
-                        "UPDATE Orders SET Status = -1 WHERE OrderID = ?")) {
+                        "UPDATE Orders SET StatusID = -1 WHERE OrderID = ?")) {
                     ps.setInt(1, activeOrderID);
                     ps.executeUpdate();
                     JOptionPane.showMessageDialog(window, "Order canceled.");

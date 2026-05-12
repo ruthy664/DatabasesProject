@@ -7,11 +7,11 @@ import javax.swing.text.MaskFormatter;
 public class DeliveryDriverRegistration extends JFrame {
     String url = "jdbc:mysql://localhost:3306/food_delivery";
     String user = "root"; // Put your database's username and password here
-    String password = "Famislife1221!!"; // Put your database's username and password here
+    String password = "password"; // Put your database's username and password here
 
     // ---------- Create a Database Connection ----------
     private Connection getConn() throws Exception {
-        Class.forName("com.mysql.cj.jdbc.Driver");  // Load MySQL driver
+        Class.forName("com.mysql.cj.jdbc.Driver"); // Load MySQL driver
         return DriverManager.getConnection(url, user, password);
     }
 
@@ -30,17 +30,19 @@ public class DeliveryDriverRegistration extends JFrame {
         // Close operation when the window is closed
 
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Close operation when the window is closed
-        
+
         // Set the initial size of the window
         window.setSize(500, 400);
         window.setLayout(new BorderLayout());
 
         // Need to include 6 columns
-        // BusinessName, Username, BusinessPassword, Cuisine, Phone number, LocationID (which will be automatically assigned when they create the new location)
-        // FoodID can be null -- but i think i'm going to delete the foodID entity and just make it a string
+        // BusinessName, Username, BusinessPassword, Cuisine, Phone number, LocationID
+        // (which will be automatically assigned when they create the new location)
+        // FoodID can be null -- but i think i'm going to delete the foodID entity and
+        // just make it a string
         // For LocationID, the business will have to create a new location
         JPanel registrationFields = new JPanel();
-        registrationFields.setLayout(new GridLayout(7,2, 10, 30));
+        registrationFields.setLayout(new GridLayout(7, 2, 10, 30));
         registrationFields.setBorder(new EmptyBorder(50, 10, 10, 10));
 
         // employee name
@@ -78,18 +80,16 @@ public class DeliveryDriverRegistration extends JFrame {
         capacityField.setPreferredSize(new Dimension(200, 30));
         registrationFields.add(capacityField);
 
-        
         JPanel holder = new JPanel(new FlowLayout());
         holder.add(registrationFields);
         window.add(holder, BorderLayout.CENTER);
 
-        JPanel registerButtonPanel = new JPanel(new GridLayout(1,1));
+        JPanel registerButtonPanel = new JPanel(new GridLayout(1, 1));
         JButton registerButton = new JButton("Register");
-        
-        registerButtonPanel.add(registerButton);
-        
-        window.add(registerButtonPanel, BorderLayout.SOUTH);
 
+        registerButtonPanel.add(registerButton);
+
+        window.add(registerButtonPanel, BorderLayout.SOUTH);
 
         window.pack();
         window.setVisible(true);
@@ -98,15 +98,12 @@ public class DeliveryDriverRegistration extends JFrame {
     }
 
     private void register() {
-      
+
         String name = nameField.getText();
         String username = usernameField.getText();
         String password = passwordField.getText();
         String number = numberField.getText();
         String email = emailField.getText();
-
-
-
 
         if (name.isEmpty() || username.isEmpty() || password.isEmpty() || number.isEmpty()) {
             JOptionPane.showMessageDialog(window, "All fields are required");
@@ -126,17 +123,18 @@ public class DeliveryDriverRegistration extends JFrame {
             return;
         }
 
-
         // cant reuse user
-        try (Connection conn = getConn(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT Username FROM delivery_personnel")) {
+        try (Connection conn = getConn();
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT Username FROM delivery_personnel")) {
             boolean found = false;
             while (!false && rs.next()) {
-               if(rs.getString("Username").equals(username)) {
+                if (rs.getString("Username").equals(username)) {
                     found = true;
-               }
+                }
             }
 
-            if(found) {
+            if (found) {
                 JOptionPane.showMessageDialog(window, "That username already exists.");
                 return;
             }
@@ -145,17 +143,18 @@ public class DeliveryDriverRegistration extends JFrame {
             JOptionPane.showMessageDialog(window, ex);
         }
 
-
         // cant reuse email
-        try (Connection conn = getConn(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT Email FROM delivery_personnel")) {
+        try (Connection conn = getConn();
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT Email FROM delivery_personnel")) {
             boolean found = false;
             while (!false && rs.next()) {
-               if(rs.getString("Email").equals(username)) {
+                if (rs.getString("Email").equals(username)) {
                     found = true;
-               }
+                }
             }
 
-            if(found) {
+            if (found) {
                 JOptionPane.showMessageDialog(window, "That Email is already registered with an account.");
                 return;
             }
@@ -164,10 +163,10 @@ public class DeliveryDriverRegistration extends JFrame {
             JOptionPane.showMessageDialog(window, ex);
         }
 
-
         // Create delivery driver
-        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO delivery_personnel(DelivererName, Username, DelivererPassword, PhoneNumber, Email, Capacity) VALUES (?, ?, ?, ?, ?, ?)")) {
+        try (Connection conn = getConn();
+                PreparedStatement ps = conn.prepareStatement(
+                        "INSERT INTO delivery_personnel(DelivererName, Username, DelivererPassword, PhoneNumber, Email, Capacity) VALUES (?, ?, ?, ?, ?, ?)")) {
 
             ps.setString(1, name);
             ps.setString(2, username);
@@ -175,33 +174,27 @@ public class DeliveryDriverRegistration extends JFrame {
             ps.setString(4, number);
             ps.setString(5, email);
             ps.setInt(6, capacity);
-            ps.executeUpdate();    
+            ps.executeUpdate();
 
-         JOptionPane.showMessageDialog(window, "Added: " + name);
+            JOptionPane.showMessageDialog(window, "Added: " + name);
 
-         window.setVisible(false);
-         new DeliveryDriverLogin();
+            window.setVisible(false);
+            new DeliveryDriverLogin();
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(window, ex);
         }
     }
 
- 
-    
     protected MaskFormatter createFormatter(String s) {
-    MaskFormatter formatter = null;
-    try {
-        formatter = new MaskFormatter(s);
-    } catch (java.text.ParseException exc) {
-        System.err.println("formatter is bad: " + exc.getMessage());
-        System.exit(-1);
+        MaskFormatter formatter = null;
+        try {
+            formatter = new MaskFormatter(s);
+        } catch (java.text.ParseException exc) {
+            System.err.println("formatter is bad: " + exc.getMessage());
+            System.exit(-1);
+        }
+        return formatter;
     }
-    return formatter;
-}
-
-    
-
-    
 
 }

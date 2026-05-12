@@ -185,7 +185,7 @@ public class CustomerRegistration extends JFrame {
          JOptionPane.showMessageDialog(window, "Added: " + name);
 
          window.setVisible(false);
-         new BusinessLogin();
+         new CustomerLogin();
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(window, ex);
