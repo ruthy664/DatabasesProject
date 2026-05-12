@@ -47,6 +47,7 @@ public class LaunchPage extends JFrame {
         });
         admin.addActionListener(e -> {
             window.setVisible(false);
+            new AdminLogin();
             // Add admin log-in page call here
         });
     }
