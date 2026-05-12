@@ -13,7 +13,7 @@ public class BusinessUI extends JFrame {
     // Database connection details
     String url = "jdbc:mysql://localhost:3306/food_delivery";
     String user = "root";
-    String password = "Pleasework4!";
+    String password = "password";
 
     // Input fields and output area
     JTextArea output;

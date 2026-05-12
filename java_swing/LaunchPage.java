@@ -33,6 +33,7 @@ public class LaunchPage extends JFrame {
         // Button listeners that trigger the correct log-in pages
         customer.addActionListener(e -> {
             window.setVisible(false);
+            new CustomerLogin();
             // Add customer log-in page call here
         });
         restaurant.addActionListener(e -> {
@@ -41,6 +42,7 @@ public class LaunchPage extends JFrame {
         });
         driver.addActionListener(e -> {
             window.setVisible(false);
+            new DeliveryDriverLogin();
             // Add driver log-in page call here
         });
         admin.addActionListener(e -> {
@@ -48,4 +50,9 @@ public class LaunchPage extends JFrame {
             // Add admin log-in page call here
         });
     }
+
+    public static void main(String[] args) {
+        new LaunchPage();
+    }
 }
+
