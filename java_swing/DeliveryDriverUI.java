@@ -8,7 +8,7 @@ public class DeliveryDriverUI extends JFrame {
     // Database connection details
     String url = "jdbc:mysql://localhost:3306/food_delivery";
     String user = "root"; // Replace this with your database username
-    String password = "Pleasework4!"; // Replace this with your database password
+    String password = "password"; // Replace this with your database password
 
     // Input fields and output area
     JFrame window;
