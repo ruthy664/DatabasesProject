@@ -1,4 +1,4 @@
-
+// Author: Emma Hermann
 import java.awt.*;
 import java.sql.*;
 import javax.swing.*;     // Swing GUI classes (JFrame, JButton, JTextField, etc.)
