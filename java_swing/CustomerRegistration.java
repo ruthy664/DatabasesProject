@@ -7,7 +7,7 @@ import javax.swing.text.MaskFormatter;
 public class CustomerRegistration extends JFrame {
     String url = "jdbc:mysql://localhost:3306/food_delivery";
     String user = "root"; // Put your database's username and password here
-    String password = "Pleasework4!"; // Put your database's username and password here
+    String password = "password"; // Put your database's username and password here
 
     // ---------- Create a Database Connection ----------
     private Connection getConn() throws Exception {
