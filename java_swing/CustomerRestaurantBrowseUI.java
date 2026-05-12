@@ -97,7 +97,8 @@ public class CustomerRestaurantBrowseUI extends JFrame {
 
             // This parts weird but the only way I could get the window to show was by creating a named instance idk why
             window.setVisible(false);
-            CustomerLoginUI login = new CustomerLoginUI();
+            LaunchPage login = new LaunchPage();
+            // CustomerLoginUI login = new CustomerLoginUI();
             login.window.setVisible(true);
         });
 

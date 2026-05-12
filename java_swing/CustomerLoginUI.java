@@ -68,19 +68,25 @@ public class CustomerLoginUI extends JFrame {
         JPanel loginPageButtons = new JPanel(new GridLayout(1,2, 10, 0));
         JButton loginButton = new JButton("Login");
         JButton registerButton = new JButton("Register");
-        
+        JButton backButton = new JButton("Back");
+
         loginPageButtons.add(loginButton);
         loginPageButtons.add(registerButton);
-        
+        loginPageButtons.add(backButton);
+
         window.add(loginPageButtons, BorderLayout.SOUTH);
 
-        
         window.pack();
-        window.setVisible(true);   
+        window.setVisible(true);
 
-        // Defines button actions and launches the associated UI for each
+        // ---------- Button Click Actions ----------
         loginButton.addActionListener(e -> loginUser());
         registerButton.addActionListener(e -> registerCustomer());
+
+        backButton.addActionListener(e -> {
+            window.setVisible(false);
+            new LaunchPage();
+        });
     }
 
     // ---------- Create a Database Connection ----------
