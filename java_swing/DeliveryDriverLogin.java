@@ -8,7 +8,7 @@ public class DeliveryDriverLogin {
     // Database connection details
     String url = "jdbc:mysql://localhost:3306/food_delivery";
     String user = "root"; // CHANGE THIS TO YOUR DATABASE USERNAME
-    String password = "password!"; // CHANGE THIS TO YOUR DATABASE PASSWORD
+    String password = "Famislife1221!"; // CHANGE THIS TO YOUR DATABASE PASSWORD
 
     JTextField usernameField;
     JTextField passwordField;
