@@ -6,7 +6,7 @@ public class CustomerViewRestaurantUI extends JFrame {
 
     String url = "jdbc:mysql://localhost:3306/food_delivery";
     String user = "root";
-    String password = "Pleasework4!";
+    String password = "password";
     int activeOrderID = -1;  // -1 means no order yet
     int customerID;
     int businessID;
