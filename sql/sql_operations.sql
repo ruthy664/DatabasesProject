@@ -264,7 +264,7 @@ JOIN Location L ON L.LocationID = C.LocationID
 WHERE C.CustomerID IN (
 	SELECT CustomerID
 	FROM Orders
-	WHERE BusinessID = 0)
+	WHERE BusinessID = 1)
 ORDER BY C.CustomerName;
 
 -- Get all businesses a customer has ordered from
