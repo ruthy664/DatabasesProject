@@ -116,9 +116,21 @@ public class CustomerLogin extends JFrame {
             if(rs.next()) {
                 if(rs.getString("CustomerPassword").equals(password)) {
                     window.setVisible(false);
-                    RestaurantSelectionUI r = new RestaurantSelectionUI();
-                    r.setVisible(true);
-            }   else {
+                    try (Connection conn2 = getConn();
+                        PreparedStatement ps2 = conn2.prepareStatement(
+                            "SELECT CustomerID FROM Customer WHERE Username = ?")) {
+                        ps2.setString(1, username);
+                        ResultSet rs2 = ps2.executeQuery();
+                        if (rs2.next()) {
+                            int customerID = rs2.getInt("CustomerID");
+                            RestaurantSelectionUI r = new RestaurantSelectionUI(customerID);
+                            r.setVisible(true);
+                        }
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(window, ex.getMessage());
+                    }
+            }
+               else {
                     JOptionPane.showMessageDialog(window, "Incorrect Password");
                 }
             }
