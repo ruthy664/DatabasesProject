@@ -20,7 +20,7 @@ public class CustomerCartUI {
     // DATABSE INFORMATION, REVIEW BEFORE LAUNCHING!!!
     String url = "jdbc:mysql://localhost:3306/food_delivery";
     String user = "root";
-    String password = "Pleasework4!";
+    String password = "password";
 
     JFrame window;
     int customerID;
