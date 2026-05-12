@@ -1,3 +1,4 @@
+// Author: Emma Hermann
 import java.awt.*;
 import java.sql.*;
 import javax.swing.*;
