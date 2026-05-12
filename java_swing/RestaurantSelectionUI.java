@@ -20,12 +20,12 @@ public class RestaurantSelectionUI extends javax.swing.JFrame {
     String user = "root"; // CHANGE THIS TO YOUR DATABASE USERNAME
     String password = "password"; // CHANGE THIS TO YOUR DATABASE PASSWORD 
     
-    /**
-     * Creates new form RestaurantSelectionUI
-     */
-    public RestaurantSelectionUI() {
+    int customerID;
+
+    public RestaurantSelectionUI(int customerID) {
+        this.customerID = customerID;
         initComponents();
-        setMinimumSize(new Dimension(400, 200)); 
+        setMinimumSize(new Dimension(400, 200));
         loadRestaurants();
         setLocationRelativeTo(null);
     }
@@ -88,20 +88,30 @@ public class RestaurantSelectionUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
         String selected = (String) jComboBox2.getSelectedItem();
-
         if (selected == null || selected.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                "Please select a restaurant before continuing.",
-                "No Restaurant Selected",
-                JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please select a restaurant.", "No Selection", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        this.setVisible(false);
-        new CustomerViewRestaurantUI(selected);
-    }//GEN-LAST:event_jButton1ActionPerformed
+        // Look up businessID
+        try (Connection conn = getConn();
+            PreparedStatement ps = conn.prepareStatement(
+                "SELECT BusinessID FROM Business WHERE BusinessName = ?")) {
+            ps.setString(1, selected);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int businessID = rs.getInt("BusinessID");
+                this.setVisible(false);
+                new CustomerViewRestaurantUI(selected, customerID, businessID);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
+    }
+
+
 
     /**
      * @param args the command line arguments
@@ -125,7 +135,7 @@ public class RestaurantSelectionUI extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new RestaurantSelectionUI().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new RestaurantSelectionUI(0).setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
