@@ -1,9 +1,21 @@
+/*
+AUTHOR: Hudson Cho
+CREATED: 5.11.2026
+UPDATED: 5.11.2026
+DESCRIPTION:
+    The CustomerOrdersUI is the UI that is launched when a user selects a button to view 
+    their current and previous orders
+NOTES:
+    - In the constructor be sure to change the user and password to the associated user and pasword you
+      are using for mysql
+*/
 import java.awt.*;
 import java.sql.*;
 import javax.swing.*;
 
 public class CustomerOrdersUI {
 
+    // DATABSE INFORMATION, REVIEW BEFORE LAUNCHING!!!
     String url = "jdbc:mysql://localhost:3306/food_delivery";
     String user = "root";
     String password = "password";
@@ -11,6 +23,9 @@ public class CustomerOrdersUI {
     JFrame window;
     int customerID;
 
+    /**
+     * Creates the main UI for CustomerOrdersUI screen
+    */
     public CustomerOrdersUI(int customerID) {
         this.customerID = customerID;
 
@@ -48,6 +63,7 @@ public class CustomerOrdersUI {
                 int status = rs.getInt("Status");
                 String payment = rs.getString("PaymentMethod");
 
+                // Converts the numeric statusID field to a human readable form
                 String statusText = switch (status) {
                     case -1 -> "Canceled";
                     case 0  -> "Unplaced";
@@ -59,12 +75,14 @@ public class CustomerOrdersUI {
                     default -> "Unknown";
                 };
 
+                // Creats a card object that can be used to show different orders
                 JPanel card = new JPanel(new BorderLayout());
                 card.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createEmptyBorder(5, 10, 5, 10),
                     BorderFactory.createLineBorder(Color.LIGHT_GRAY)
                 ));
 
+                // Creates basic formatting for viewing order history
                 JPanel cardTop = new JPanel(new FlowLayout(FlowLayout.LEFT));
                 JLabel orderLabel = new JLabel(String.format(
                     "Order #%d  |  %s  |  %s  |  Payment: %s  |  Status: %s",
@@ -76,6 +94,7 @@ public class CustomerOrdersUI {
                 itemsPanel.setLayout(new BoxLayout(itemsPanel, BoxLayout.Y_AXIS));
                 itemsPanel.setBorder(BorderFactory.createEmptyBorder(0, 15, 5, 0));
 
+                // Queries database to list all items within a given order
                 try (Connection conn2 = getConn();
                      PreparedStatement ps2 = conn2.prepareStatement(
                         "SELECT MI.ItemName, MI.ItemPrice, OI.Quantity " +
@@ -114,7 +133,7 @@ public class CustomerOrdersUI {
             JOptionPane.showMessageDialog(window, "Error loading orders:\n" + ex.getMessage());
         }
 
-        // Add scrollpane ONCE, AFTER all cards are built
+        // Add scrollpane allowign uses to scroll through their different previous orders
         JScrollPane scrollPane = new JScrollPane(ordersPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
