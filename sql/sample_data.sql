@@ -12,7 +12,6 @@ TRUNCATE TABLE Payment_Method;
 TRUNCATE TABLE Business;
 TRUNCATE TABLE Customer;
 TRUNCATE TABLE Location;
-TRUNCATE TABLE Delivery_Status;
 
 INSERT INTO Delivery_Personnel (DelivererName, Username, DelivererPassword, PhoneNumber, Email, Capacity) VALUES
 ('Jhon Shwarma', 'jshwarma', 'worktime', '432-567-9911', 'jhonshwarma@delivery.com', 6),
