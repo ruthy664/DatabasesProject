@@ -9,7 +9,7 @@ public class CustomerLogin extends JFrame {
     // Database connection details
     String url = "jdbc:mysql://localhost:3306/food_delivery";
     String user = "root"; // CHANGE THIS TO YOUR DATABASE USERNAME
-    String password = "Pleasework4!"; // CHANGE THIS TO YOUR DATABASE PASSWORD
+    String password = "password"; // CHANGE THIS TO YOUR DATABASE PASSWORD
 
     JTextField usernameField;
     JTextField passwordField;
