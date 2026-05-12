@@ -305,6 +305,7 @@ private int getOrCreateOrder() {
                 JButton addBtn = new JButton("+");
                 JButton removeBtn = new JButton("-");
                 addBtn.setEnabled(available);
+                removeBtn.setEnabled((available));
                 // Listeners for previously created buttons
                 addBtn.addActionListener(e -> addItemToOrder(itemID, itemName));
                 removeBtn.addActionListener(e -> removeItemFromOrder(itemID, itemName));
