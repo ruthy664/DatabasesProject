@@ -16,7 +16,7 @@ import java.awt.*;
 import java.sql.*;
 import javax.swing.*;
 
-public class RestaurantSelectionUI extends JFrame {
+public class CustomerRestaurantSelectionUI extends JFrame {
 
     // DATABSE INFORMATION, REVIEW BEFORE LAUNCHING!!!
     String url = "jdbc:mysql://localhost:3306/food_delivery";
@@ -31,7 +31,7 @@ public class RestaurantSelectionUI extends JFrame {
     /**
      * Creates the main UI for RestaurantSelectionUI
     */
-    public RestaurantSelectionUI(int customerID) {
+    public CustomerRestaurantSelectionUI(int customerID) {
         this.customerID = customerID;
 
         window = new JFrame("Select a Restaurant");

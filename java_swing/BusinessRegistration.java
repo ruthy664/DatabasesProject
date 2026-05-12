@@ -6,8 +6,8 @@ import javax.swing.text.MaskFormatter;
 
 public class BusinessRegistration extends JFrame {
     String url = "jdbc:mysql://localhost:3306/food_delivery";
-    String user = "root"; // Put your database's username and password here
-    String password = "password"; // Put your database's username and password here
+    String user = "root";
+    String password = "Pleasework4!";
 
     // ---------- Create a Database Connection ----------
     private Connection getConn() throws Exception {
@@ -26,7 +26,7 @@ public class BusinessRegistration extends JFrame {
 
     public BusinessRegistration() {
         // Basic window setup
-        window = new JFrame("Business Registration");
+        window = new JFrame("Business Login");
 
         // Close operation when the window is closed
 
@@ -70,7 +70,6 @@ public class BusinessRegistration extends JFrame {
         
         registrationFields.add(numberField);
 
-        // FIGURE OUT THIS PART
         registrationFields.add(new JLabel("Location/Address:"));
         locationField = new JTextField();
         locationField.setPreferredSize(new Dimension(200, 30));
@@ -129,6 +128,21 @@ public class BusinessRegistration extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(window, ex);
         }
+
+        try (Connection conn3 = getConn(); PreparedStatement ps3 = conn3.prepareStatement("SELECT Address FROM Location")) {
+            
+            ResultSet rs = ps3.executeQuery();
+            while(rs.next()) {
+               if(rs.getString("Address").equals(location)) {
+                    JOptionPane.showMessageDialog(window, "That address already exists. Please enter another address");
+                    return;
+               }
+            }
+           
+            
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(window, ex);
+            }
 
         int locationID = -1; // -1 value is needed so the variable can be used later
         // Create location for the restaurant

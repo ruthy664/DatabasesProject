@@ -7,20 +7,11 @@ TRUNCATE TABLE Menu;
 TRUNCATE TABLE Delivery;
 TRUNCATE TABLE Orders;
 TRUNCATE TABLE DatabaseAdmin;
-TRUNCATE TABLE Delivery_Status;
 TRUNCATE TABLE Delivery_Personnel;
 TRUNCATE TABLE Payment_Method;
 TRUNCATE TABLE Business;
 TRUNCATE TABLE Customer;
 TRUNCATE TABLE Location;
-
-INSERT INTO Delivery_Status (CurrentStatus) VALUES
-('pending'),
-('placed'),
-('arriving'),
-('arrived'),
-('canceled'),
-('delayed');
 
 INSERT INTO Delivery_Personnel (DelivererName, Username, DelivererPassword, PhoneNumber, Email, Capacity) VALUES
 ('Jhon Shwarma', 'jshwarma', 'worktime', '432-567-9911', 'jhonshwarma@delivery.com', 6),
@@ -77,7 +68,7 @@ INSERT INTO Business(Username, BusinessPassword, LocationID, BusinessName, Cuisi
 ('cwok', 'city', 14, 'City Wok Express', "Chinese", '410-555-2006'),
 ('sdeli', 'sunrise', 7, 'Sunrise Deli', NULL, '410-555-2007'),
 ('ocafe', 'oak', 10, 'Oak & Oven Cafe', "Cafe", '410-555-2008'),
-('cburger', 'capital', 0, 'Capital Burger House', "American", '410-555-2009'),
+('cburger', 'capital', 1, 'Capital Burger House', "American", '410-555-2009'),
 ('bharbor', 'blue', 11, 'Blue Harbor Sushi', "Chinese", '410-555-2010');
 
 INSERT INTO Payment_Method(PaymentMethod) VALUES
@@ -86,31 +77,31 @@ INSERT INTO Payment_Method(PaymentMethod) VALUES
 ('cash'),
 ('venmo');
 
-INSERT INTO Orders (CustomerID, BusinessID, PaymentID, OrderDate) VALUES
-(3, 2, 3, '2026-04-20 12:00:00'),
-(2, 8, 2, '2026-04-20 12:10:00'),
-(5, 9, 0, '2026-04-20 12:20:00'),
-(0, 1, 1, '2026-04-20 12:30:00'),
-(6, 6, 3, '2026-04-20 12:40:00'),
-(9, 4, 2, '2026-04-20 12:50:00'),
-(1, 0, 0, '2026-04-20 13:00:00'),
-(7, 7, 1, '2026-04-20 13:10:00'),
-(8, 3, 3, '2026-04-20 13:20:00'),
-(4, 5, 2, '2026-04-20 13:30:00');
+INSERT INTO Orders (CustomerID, BusinessID, PaymentID, OrderDate, StatusID, LocationID) VALUES
+(3, 2, 3, '2026-04-20', 3, 15),
+(2, 8, 2, '2026-04-20', 1, 3),
+(5, 9, 1, '2026-04-20', 4, 0),
+(0, 1, 1, '2026-04-20', 1, 12),
+(6, 6, 3, '2026-04-20', 2, 4),
+(9, 4, 2, '2026-04-20', 1, 5),
+(1, 0, 1, '2026-04-20', 3, 1),
+(7, 7, 1, '2026-04-20', 1, 9),
+(8, 3, 3, '2026-04-20', 2, 14),
+(4, 5, 2, '2026-04-20', 1, 10);
 
 INSERT INTO Delivery 
-(OrderID, EmployeeID, LocationID, StatusID, DeliveryFee) 
+(OrderID, EmployeeID, DeliveryFee)
 VALUES
-(0, 5, NULL, 3, 4.99),
-(1, 7, 3, 5, 2.50),
-(2, 2, 0, 4, 5.99),
-(3, 1, 12, 1, 3.49),
-(4, 8, NULL, 2, 6.25),
-(5, 4, 5, 0, 1.99),
-(6, 9, NULL, 3, 4.50),
-(7, 3, 9, 5, 7.99),
-(8, 6, NULL, 2, 3.75),
-(9, 0, NULL, 1, 5.25);
+(1, 5, 4.99),
+(1, 7, 2.50),
+(2, 2, 5.99),
+(3, 1, 3.49),
+(4, 8, 6.25),
+(5, 4, 1.99),
+(6, 9, 4.50),
+(7, 3, 7.99),
+(8, 6, 3.75),
+(9, 1, 5.25);
 
 INSERT INTO Menu(BusinessID, MenuName) VALUES
 (1, 'regular'),
@@ -166,9 +157,12 @@ INSERT INTO Menu_Item (MenuID, ItemName, ItemPrice, Availability) VALUES
 (14, 'Burger Combo', 12.99, FALSE),
 (16, 'Sushi Roll', 13.99, TRUE);
 
+
+
+
 INSERT INTO Order_Item (OrderID, ItemID, Quantity) VALUES
-(0, 0, 1),
-(0, 1, 2),
+(1, 1, 1),
+(1, 1, 2),
 (1, 3, 2),
 (1, 13, 1),
 (2, 29, 1),
@@ -183,7 +177,7 @@ INSERT INTO Order_Item (OrderID, ItemID, Quantity) VALUES
 (6, 1, 1),
 (7, 27, 2),
 (7, 16, 1),
-(8, 0, 1),
+(8, 1, 1),
 (8, 17, 1),
 (9, 11, 1),
 (9, 20, 1);

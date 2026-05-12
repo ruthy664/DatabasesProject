@@ -2,14 +2,16 @@
 import java.awt.*;     // Swing GUI classes (JFrame, JButton, JTextField, etc.)
 import java.sql.*;        // Layout managers like BorderLayout, GridLayout
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.text.MaskFormatter;        // JDBC classes for database connection
+
 
 public class BusinessUI extends JFrame {
 
     // Database connection details
     String url = "jdbc:mysql://localhost:3306/food_delivery";
-    String user = "username"; // Replace this with your database username
-    String password = "password"; // Replace this with your database password
+    String user = "root";
+    String password = "Pleasework4!";
 
     // Input fields and output area
     JTextField nameField, majorField;
@@ -18,6 +20,9 @@ public class BusinessUI extends JFrame {
     JPanel page1;
     JPanel updateInput;
     JTextField updateMenuNameField;
+    JPanel addMenuInput;
+    JPanel menuHolder;
+    JPanel deleteMenuInput;
 
     public BusinessUI(String username) {
 
@@ -49,7 +54,9 @@ public class BusinessUI extends JFrame {
         JButton updateButton = new JButton("Update Menu");
         JButton addButton = new JButton("Add Menu"); // LISTENER SHOULD REMOVE UPDATE BUTTONS
         JButton deleteButton = new JButton("Delete Menu"); // LISTENER SHOULD REMOVE UPDATE BUTTONS
-        
+        JPanel menuHolder = new JPanel();
+
+
         menuButtons.add(viewButton);
         menuButtons.add(updateButton);
         menuButtons.add(addButton);
@@ -60,19 +67,29 @@ public class BusinessUI extends JFrame {
         menusOutput.setEditable(false);                      // User cannot type here
         page1.add(new JScrollPane(menusOutput), BorderLayout.CENTER);
 
-         updateInput = new JPanel(new GridLayout(1, 5));
+        // --------------------------- elements regarding menus -------------------------------
+        // ------------ elements for viewing a menu ---------------
+        viewButton.addActionListener(e -> {
+            viewMenus(menusOutput, businessUsername); 
+            updateInput.setVisible(false);
+            addMenuInput.setVisible(false);
+            deleteMenuInput.setVisible(false);
+            page1.revalidate();
+            page1.repaint();
+        });
 
-      
+        // ---------------- Elements for updating a menu ----------------
+        updateInput = new JPanel(new GridLayout(1, 5));
         updateInput.add(new JLabel("MenuID:"));
         
         JTextField idField = new JTextField();
         idField.setPreferredSize(new Dimension(200, 30));
         updateInput.add(idField);
-        updateInput.add(new JLabel("New Menu Name:"));
+        updateInput.add(new JLabel("Updated Menu Name:"));
         updateMenuNameField = new JTextField();
         updateMenuNameField.setPreferredSize(new Dimension(200, 30));
         updateInput.add(updateMenuNameField);
-        page1.add(updateInput, BorderLayout.SOUTH);
+        menuHolder.add(updateInput, BorderLayout.SOUTH);
         JButton updateBtn = new JButton("Submit Update");
         updateBtn.setPreferredSize(new Dimension(200, 30));
         updateInput.add(updateBtn);
@@ -80,16 +97,52 @@ public class BusinessUI extends JFrame {
         page1.revalidate();
         page1.repaint();
 
-        viewButton.addActionListener(e -> {
-            viewMenus(menusOutput, businessUsername); 
-            updateInput.setVisible(false);
-            page1.revalidate();
-            page1.repaint();
-        });
-
-        updateButton.addActionListener(e -> updateMenu(menusOutput, businessUsername, idField));
+        updateButton.addActionListener(e -> updateMenu(menusOutput));
         updateBtn.addActionListener(e -> updateMenuPt2(username, idField, updateMenuNameField));
 
+        // -------------- elements for adding a menu --------------
+        addMenuInput = new JPanel(new GridLayout(1, 5));
+        
+       
+        addMenuInput.add(new JLabel("Menu Name:"));
+        JTextField addMenuNameField = new JTextField();
+        addMenuNameField.setPreferredSize(new Dimension(200, 30));
+        addMenuInput.add(addMenuNameField);
+        menuHolder.add(addMenuInput, BorderLayout.SOUTH);
+        JButton addBtn = new JButton("Add Menu");
+        addBtn.setPreferredSize(new Dimension(200, 30));
+        addMenuInput.add(addBtn);
+        addMenuInput.setVisible(false);
+        page1.revalidate();
+        page1.repaint();
+
+         page1.add(menuHolder, BorderLayout.SOUTH);
+
+        addButton.addActionListener(e -> addMenu(menusOutput));
+        addBtn.addActionListener(e -> addMenuPt2(addMenuNameField, username));
+
+
+
+        // -------------- elements for deleting a menu --------------
+        deleteMenuInput = new JPanel(new GridLayout(1, 5));
+        
+       
+        deleteMenuInput.add(new JLabel("Menu ID:"));
+        JTextField deleteMenuIDField = new JTextField();
+        deleteMenuIDField.setPreferredSize(new Dimension(200, 30));
+        deleteMenuInput.add(deleteMenuIDField);
+        menuHolder.add(deleteMenuInput, BorderLayout.SOUTH);
+        JButton deleteBtn = new JButton("Delete Menu");
+        deleteBtn.setPreferredSize(new Dimension(200, 30));
+        deleteMenuInput.add(deleteBtn);
+        deleteMenuInput.setVisible(false);
+        page1.revalidate();
+        page1.repaint();
+
+         page1.add(menuHolder, BorderLayout.SOUTH);
+
+        deleteButton.addActionListener(e -> deleteMenu(menusOutput));
+        deleteBtn.addActionListener(e -> deleteMenuPt2(username, deleteMenuIDField));
 
 
 
@@ -103,48 +156,202 @@ public class BusinessUI extends JFrame {
 
 
 
-
-
-
-
-
-
+        // ---------------- elements for menu items ----------------------------------------
         // Items tab - adding, updating (adding nutrional info), deleting
         // Business will have to select one of their menus: display menu titles first. When they select the menu, it
         // displays the items. Then after displaying, the available buttons will be add item, update item, delete item
         // add item - they enter all of the item info
         // update item - they select an item and update what they want
         // delete item - they select and item to delete
-        JPanel page2 = new JPanel();
-        page2.add(new JLabel("This is Tab 2"));
+        JPanel page2 = new JPanel(new BorderLayout());
+        // All of this is going to be on one page because the multiple pages is awful
+        // elements to include: menu id field and label, item name field and label, price field and label
+        // availaibility field and label, item id field and label
+        JPanel itemsInput = new JPanel(new GridLayout(5,2));
+        JPanel itemsButtons = new JPanel(new GridLayout(1,4));
+        JTextArea itemsOutput = new JTextArea();
+        itemsOutput.setEditable(false);
+        itemsOutput.setBorder(new EmptyBorder(0, 0, 100, 0));
+        page2.add(itemsOutput, BorderLayout.NORTH);
 
+        // Buttons
+        JButton viewItemsBtn = new JButton("View Menu's Items");
+        JButton addItemBtn = new JButton("Add Item to Menu");
+        JButton updateItemBtn = new JButton("Update a Menu Item");
+        JButton deleteItemBtn = new JButton("Delete a Menu Item");
+        itemsButtons.add(viewItemsBtn);
+        itemsButtons.add(addItemBtn);
+        itemsButtons.add(updateItemBtn);
+        itemsButtons.add(deleteItemBtn);
+        page2.add(itemsButtons, BorderLayout.SOUTH);
+
+        // Input fields
+        itemsInput.add(new JLabel("Item ID (the ID of the item you would like to update or delete): "));
+        JTextField itemIDField = new JTextField();
+        itemIDField.setPreferredSize(new Dimension(200, 30));
+        itemsInput.add(itemIDField);
+
+        itemsInput.add(new JLabel("Menu ID: "));
+        JTextField itemMenuIDField = new JTextField();
+        itemMenuIDField.setPreferredSize(new Dimension(200, 30));
+        itemsInput.add(itemMenuIDField);
+
+        itemsInput.add(new JLabel("Item Name: "));
+        JTextField itemNameField = new JTextField();
+        itemNameField.setPreferredSize(new Dimension(200, 30));
+        itemsInput.add(itemNameField);
+
+        itemsInput.add(new JLabel("Item Price: "));
+        JTextField itemPriceField = new JTextField();
+        itemPriceField.setPreferredSize(new Dimension(200, 30));
+        itemsInput.add(itemPriceField);
+
+        itemsInput.add(new JLabel("Item Availability (Enter 0 for unavailable and 1 for available): "));
+        JTextField itemAvailField = new JTextField();
+        itemAvailField.setPreferredSize(new Dimension(200, 30));
+        itemsInput.add(itemAvailField);
+
+        JPanel holder = new JPanel(new FlowLayout());
+        holder.add(itemsInput);
+        page2.add(holder, BorderLayout.CENTER);
+
+        // Button listeners
+        viewItemsBtn.addActionListener(e -> { 
+            itemsOutput.setText("");
+            viewMenuItems(itemMenuIDField, username, itemsOutput); }); // needs menuID
+        addItemBtn.addActionListener(e -> addMenuItem(itemMenuIDField, itemNameField, itemPriceField, itemAvailField, username)); // needs menu id, item name, price, availability
+        updateItemBtn.addActionListener(e -> updateMenuItem(itemIDField, itemMenuIDField, itemNameField, itemPriceField, itemAvailField, username)); // needs item id, menu id, item name, price, availability
+        deleteItemBtn.addActionListener(e -> deleteMenuItem(itemIDField, username)); // needs item id
+
+      // ------------------------------------------------------------------------------------------------------------------- 
+
+
+      
+
+        // Input/elements needed for viewing
+        // menu id
+        
+
+
+        // Input/elements needed for adding an item
+        // menu id, item name, price, availability (have the user enter 0 for false, 1 for true, convert to boolean here)
+
+
+        // Input/elements needed for updating an item
+        // item id, menu id, item name, price, availability
+
+
+        // Input/elements needed for deleting an item
+        // item id
+
+
+        // ---------------- elements for orders ---------------------------
         // Orders tab - updating orders and creating deliveries
         // updating status
         // can select an order and update its status
         // can only update status
-        // select an order to create a delivery
-        JPanel page3 = new JPanel();
-        page3.add(new JLabel("This is Tab 3"));
+        // select an order to create a delivery - this will be done in the deliveries tab
 
+        // a business cannot create an order
+        // the only fields a business can update on an order are the status (anything else can only be changed by the customer)
+        // a business can only delete an order if the status is pending or placed, but once it's being prepared it can't be modified
+        // so methods for this tab are: view orders, edit order status, delete order
+        // needed fields: all of them for viewing, orderID for editing status, status and orderID for deleting
+        // whenever they edit a status, they can only move forward: so check that the new status is greater than the current
+
+        JPanel page3 = new JPanel(new BorderLayout());
+
+        JPanel ordersInput = new JPanel(new GridLayout(5,2));
+        JPanel ordersButtons = new JPanel(new GridLayout(1,3));
+        JTextArea ordersOutput = new JTextArea();
+        ordersOutput.setEditable(false);
+        ordersOutput.setBorder(new EmptyBorder(0, 0, 100, 0));
+        page3.add(ordersOutput, BorderLayout.NORTH);
+
+        // Buttons
+        JButton viewOrdersBtn = new JButton("View Orders");
+        JButton updateOrderBtn = new JButton("Update Order Status");
+        JButton cancelOrderBtn = new JButton("Cancel an Order");
+        ordersButtons.add(viewOrdersBtn);
+        ordersButtons.add(updateOrderBtn);
+        ordersButtons.add(cancelOrderBtn);
+        page3.add(ordersButtons, BorderLayout.SOUTH);
+
+        // Input fields
+        ordersInput.add(new JLabel("Order ID (the ID of the order you would like to update or delete): "));
+        JTextField orderIDField = new JTextField();
+        orderIDField.setPreferredSize(new Dimension(200, 30));
+        ordersInput.add(orderIDField);
+   
+        ordersInput.add(new JLabel("Possible Status Values: "));
+        JLabel statuses1 = new JLabel("-1 - Canceled | 0 - Unplaced | 1 - Placed");
+        statuses1.setPreferredSize(new Dimension(200, 30));
+        ordersInput.add(statuses1);
+        ordersInput.add(new JLabel(""));
+        JLabel statuses2 = new JLabel("2 - Accepted | 3 - In Progress | 4 - In Transit");
+        statuses2.setPreferredSize(new Dimension(200, 30));
+        ordersInput.add(statuses2);
+        ordersInput.add(new JLabel(""));
+        JLabel statuses3 = new JLabel("5 - Arrived");
+        statuses3.setPreferredSize(new Dimension(200, 30));
+        ordersInput.add(statuses3);
+
+        ordersInput.add(new JLabel("Status (please enter one of the numerical options listed above): "));
+        JTextField statusField = new JTextField();
+        statusField.setPreferredSize(new Dimension(200, 30));
+        ordersInput.add(statusField);
+
+        
+
+        JPanel ordersHolder = new JPanel(new FlowLayout());
+        ordersHolder.add(ordersInput);
+        page3.add(ordersHolder, BorderLayout.CENTER);
+
+        
+        // Button listeners
+        viewOrdersBtn.addActionListener(e -> { 
+            ordersOutput.setText("");
+            viewOrders(username, ordersOutput); });
+        updateOrderBtn.addActionListener(e -> updateOrder(orderIDField, statusField, username)); 
+        cancelOrderBtn.addActionListener(e -> cancelOrder(orderIDField, username)); 
+
+
+        // ----------------------------------------------------------------------------------------------------------
+
+        // Elements for deliveries -----------------------------------------------------------------------
         // Deliveries tab - updating deliveries, can change who's assigned to the delivery if they aren't already in transit
-        // updating status
-        // updating the status of a delivery
         // changing who's assigned to the delivery if they haven't taken the delivery out
+        // can update the delivery fee (delivery fee is what the business wants but cannot exceed 10 dollars)
+        // can delete a delivery - need deliveryID to do so, can only delete a delivery if the order doesn't have the in transit stat
+        // can NOT change orderID or locationID (locationID may no longer be a field depending on how my group members respond)
+        // can create a delivery, to do so orderID, employeeID, locationID, and delivery fee are needed
         JPanel page4 = new JPanel();
         page4.add(new JLabel("This is Tab 4"));
 
+
+        // ----------------------------------------------------------------------------------------------
+
+        // Elements for the revenue tab -------------------------------------------------------------------
         // Revenue tab
         // calculating revenue. this will just be a display
+        // Find the total revenue for a business (per order breakdown)
+        // Find the total revenue for a business (overall total)
+        // so the fields needed here are just 2 buttons, displayed on top: find revenue per order breakdown, find revenue overall
+
         JPanel page5 = new JPanel();
         page5.add(new JLabel("This is Tab 5"));
 
         // Updating business info tab
         // just updating their info
+        // all fields required, will display a similar message as the update menu item method does when the user doesn't fill all
+        // fields
+        // or, each field will have a button next to it, with individual methods for updating each component (this may be easier)
+        // fields that can be updated are business name, username (only if the username doesn't already exist), password,
+        // cuisine, phone number (copy phone number validation from registration), locationID (again, copy registration)
         JPanel page6 = new JPanel();
         page6.add(new JLabel("This is Tab 6"));
 
-        // Add the three tabs to the JTabbedPane
-        // This is where I'll go to name the tabs!
+        // Add the tabs to the JTabbedPane
         tabPanel.addTab("Menus", page1);
         tabPanel.addTab("Menu Items", page2);
         tabPanel.addTab("Orders", page3);
@@ -157,44 +364,9 @@ public class BusinessUI extends JFrame {
 
         // Make the JFrame visible
         window.setVisible(true);
-        // setTitle("Delivery Service");
-        // setSize(500, 400);
-        // setLayout(new BorderLayout());
-        // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
 
-        // ---------- Top Panel: Input Fields ----------
-        JPanel top = new JPanel(new GridLayout(2, 2));  // 2 rows × 2 columns
-
-        top.add(new JLabel("Name:"));
-        nameField = new JTextField();
-        top.add(nameField);
-
-        top.add(new JLabel("Major:"));
-        majorField = new JTextField();
-        top.add(majorField);
-
-        //  add(top, BorderLayout.NORTH);
-        // ---------- Center Area: Output ----------
-        output = new JTextArea();
-        output.setEditable(false);                      // User cannot type here
-        //  add(new JScrollPane(output), BorderLayout.CENTER);
-
-        // ---------- Bottom Panel: Buttons ----------
-        JPanel bottom = new JPanel(new GridLayout(1, 3));  // 1 row × 3 columns
-
-        JButton viewBtn = new JButton("View");
-        JButton addBtn = new JButton("Add"); 
-       // JButton updateBtn = new JButton("Update");
-
-        bottom.add(viewBtn);
-        bottom.add(addBtn);
-       // bottom.add(updateBtn);
-        //  add(bottom, BorderLayout.SOUTH);
-
-        // ---------- Button Click Actions ----------
-        // viewBtn.addActionListener(e -> viewStudents());
-        // addBtn.addActionListener(e -> addStudent());
-        // updateBtn.addActionListener(e -> updateStudent());
+       
     }
 
     // ---------- Create a Database Connection ----------
@@ -242,65 +414,18 @@ public class BusinessUI extends JFrame {
         }
 
     }
+    // ----------------------------------------------------------------------------------------------------------------
 
-    // I THINK I'M GOING TO SCRAP THE IDEA OF ADDING A NEW LAYOUT AND INSTEAD JUST HAVE ANOTHER TEXT BOX FOR THE MENU NAME
-    // AND ONLY UPDATE IF THE MENUID MEETS THE REQUIREMENTS
-    boolean validMenuID = false;
-    private void updateMenu(JTextArea menusOutput, String username, JTextField idField) {
+
+   // ------------- methods for updating menus ---------------------
+    private void updateMenu(JTextArea menusOutput) {
         menusOutput.setText("");  // Clear output
-
         updateInput.setVisible(true);
+        addMenuInput.setVisible(false);
+        deleteMenuInput.setVisible(false);
         page1.revalidate();
         page1.repaint();
         menusOutput.setText("Please enter the menu ID of the menu you would like to update");
-
-        // REMOVE ALL OF THIS AND PUT IT BACK IN THE OTHER METHOD
-        // FIX THE BUTTON LISTENER
-    
-
-       
-
-       
-
-       // page1.add(updateInput1, BorderLayout.SOUTH);
-
-        
-        
-
-       // window.revalidate(); // refresh the window layout
-
-        // USE THIS FOR UPDATING THE DATABASE, WHICH STILL NEEDS TO BE WRITTEN
-      //  int menuID = Integer.parseInt(idField.getText());
-       
-        // updateInput.setVisible(true);
-        // updateInputAdded = true;
-        // page1.revalidate();
-       // page1.add(updateInput, BorderLayout.SOUTH);
-      //  updateInput2Added = true;
-      
-      //  page1.add(updateInput2, BorderLayout.SOUTH);
-        
-        // updateBtn.addActionListener(e -> { 
-        //     validMenuID = updateMenuPt2(username, idField);
-        //     if (validMenuID) {
-        //       //  page1.remove(updateInput);
-        //         updateInput.setVisible(false);
-        //      //   page1.revalidate();
-        //       //  updateInput.revalidate();
-        //       //  updateInput.repaint();
-        //       //  page1.repaint();
-        //         // int menuID = Integer.parseInt(idField.getText());
-        //         // updateInput.add(new JLabel("New Menu Name:"));
-        //         // JTextField nameField = new JTextField();
-        //         // nameField.setPreferredSize(new Dimension(200, 30));
-        //         // updateInput.add(nameField);
-        //         // JButton updateButton = new JButton("Submit Menu Name");
-        //         // updateButton.setPreferredSize(new Dimension(200, 30));
-        //         // updateInput.add(updateButton);
-               
-        //      //   page1.repaint();
-        //     }
-        // });
     }
 
     private void updateMenuPt2(String username, JTextField idField, JTextField nameField) {
@@ -360,82 +485,735 @@ public class BusinessUI extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(window, ex.getMessage());
         }
+   
+    }
+    // ----------------------------------------------------------------------------------------------------------------
 
-        
+    // ------------ Methods for adding menus --------------------------
+    private void addMenu(JTextArea menusOutput) {
+        menusOutput.setText("");  // Clear output
+
+        updateInput.setVisible(false);
+        deleteMenuInput.setVisible(false);
+        addMenuInput.setVisible(true);
+        page1.revalidate();
+        page1.repaint();
+        menusOutput.setText("Please enter the name of the menu you would like to add");
     }
 
-    // ---------- VIEW Students (SELECT) ----------
-    private void viewStudents() {
-        output.setText("");  // Clear output
+    private void addMenuPt2(JTextField addMenuNameField, String username) {
+        String name = addMenuNameField.getText();
 
-        try (Connection conn = getConn(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT * FROM students")) {
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(window, "Menu name is required");
+            return;
+        }
 
+        int businessID = businessID(username);
+
+        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(
+                "INSERT INTO Menu(BusinessID, MenuName) VALUES (?,?)")) {
+
+            ps.setInt(1, businessID);
+            ps.setString(2, name);
+            ps.executeUpdate();      // Run INSERT
+
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex.getMessage());
+        }
+    }
+
+
+
+    // ----------------- Methods for deleting menus ---------------------
+
+     private void deleteMenu(JTextArea menusOutput) {
+        menusOutput.setText("");  // Clear output
+        updateInput.setVisible(false);
+        addMenuInput.setVisible(false);
+        deleteMenuInput.setVisible(true);
+        page1.revalidate();
+        page1.repaint();
+        menusOutput.setText("Please enter the menu ID of the menu you would like to delete");
+    }
+
+
+
+      private void deleteMenuPt2(String username, JTextField idField) {
+       int menuID;
+       try {
+        menuID = Integer.parseInt(idField.getText());
+        if(menuID < 0) {
+            JOptionPane.showMessageDialog(window, "MenuID cannot be negative");
+            return;
+        }
+       }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(window, "MenuID must be a number");
+            return;
+       }
+
+
+         try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT MenuID FROM Menu WHERE BusinessID = ?")) {
+            ps.setInt(1, businessID(username));
+            ResultSet rs = ps.executeQuery();
+            boolean found = false;
+            // Loop through result rows
+            while (!false && rs.next()) {
+               if(rs.getInt("MenuID") == menuID) {
+                    found = true;
+               }
+            }
+
+            if(!found) {
+                JOptionPane.showMessageDialog(window, "That menu ID doesn't exist.");
+                return;
+            }
+
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex);
+        }
+
+
+          // Delete the menu 
+       
+
+        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(
+                "DELETE FROM Menu WHERE MenuID=?")) {
+
+            ps.setInt(1, menuID);
+            ps.executeUpdate();      // Run UPDATE
+
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex.getMessage());
+        }
+    }
+    // --------------------------------------------------------------------------------------
+
+
+    // method for viewing a menu's items
+    private void viewMenuItems(JTextField itemMenuIDField, String username, JTextArea itemsOutput) {
+        // validate the menuID 
+         int menuID;
+       try {
+        menuID = Integer.parseInt(itemMenuIDField.getText());
+        if(menuID < 0) {
+            JOptionPane.showMessageDialog(window, "MenuID cannot be negative");
+            return;
+        }
+       }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(window, "MenuID is required and must be a number");
+            return;
+       }
+
+
+         try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT MenuID FROM Menu WHERE BusinessID = ?")) {
+            ps.setInt(1, businessID(username));
+            ResultSet rs = ps.executeQuery();
+            boolean found = false;
+            // Loop through result rows
+            while (!false && rs.next()) {
+               if(rs.getInt("MenuID") == menuID) {
+                    found = true;
+               }
+            }
+
+            if(!found) {
+                JOptionPane.showMessageDialog(window, "That menu ID doesn't exist.");
+                return;
+            }
+
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex);
+        }
+
+    
+        
+        // print all items assoicated with that menu
+        int businessID = businessID(username);
+
+        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT MI.ItemID, MI.ItemName, MI.ItemPrice, MI.Availability, M.MenuName FROM Menu_Item MI JOIN Menu M ON M.MenuID = MI.MenuID WHERE M.BusinessID = ? ORDER BY MI.ItemPrice")) {
+            ps.setInt(1, businessID);
+            ResultSet rs = ps.executeQuery();
             // Loop through result rows
             while (rs.next()) {
-                output.append(
-                        rs.getInt("id") + " | "
-                        + rs.getString("name") + " | "
-                        + rs.getString("major") + "\n"
+                itemsOutput.append("ItemID: " +
+                        rs.getInt("ItemID") + " | ItemName: "
+                        + rs.getString("ItemName") + " | ItemPrice: "
+                        + rs.getDouble("ItemPrice") + " | Available: "
+                        + rs.getBoolean("Availability") + " | MenuName: "
+                        + rs.getString("MenuName") + "\n"
                 );
             }
 
         } catch (Exception ex) {
             output.setText(ex.getMessage());
         }
+
     }
 
-    // ---------- ADD Student (INSERT) ----------
-    private void addStudent() {
-        output.setText("");
+    // method for adding a menu item
+    private void addMenuItem(JTextField itemMenuIDField, JTextField itemNameField, JTextField itemPriceField, JTextField itemAvailField, String username) {
 
-        String name = nameField.getText();
-        String major = majorField.getText();
-
+        String menuIDString = itemMenuIDField.getText();
+        String itemName = itemNameField.getText();
+        String itemPriceString = itemPriceField.getText(); 
+        String availability = itemAvailField.getText(); 
+        
         // Simple validation
-        if (name.isEmpty() || major.isEmpty()) {
-            output.setText("Both fields required.");
+        if (menuIDString.isEmpty() || itemName.isEmpty() || itemPriceString.isEmpty() || availability.isEmpty()) {
+            JOptionPane.showMessageDialog(window, "MenuID, item name, item price, and availability are required");
             return;
         }
 
-        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO students(name, major) VALUES (?, ?)")) {
 
-            ps.setString(1, name);
-            ps.setString(2, major);
+        // Validating menuID
+       
+    int menuID;
+       try {
+        menuID = Integer.parseInt(itemMenuIDField.getText());
+        if(menuID < 0) {
+            JOptionPane.showMessageDialog(window, "MenuID cannot be negative");
+            return;
+        }
+       }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(window, "MenuID is required and must be a number");
+            return;
+       }
+
+
+         try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT MenuID FROM Menu WHERE BusinessID = ?")) {
+            ps.setInt(1, businessID(username));
+            ResultSet rs = ps.executeQuery();
+            boolean found = false;
+            // Loop through result rows
+            while (!false && rs.next()) {
+               if(rs.getInt("MenuID") == menuID) {
+                    found = true;
+               }
+            }
+
+            if(!found) {
+                JOptionPane.showMessageDialog(window, "That menu ID doesn't exist.");
+                return;
+            }
+
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex);
+        }
+
+        // Validating itemPrice
+        double itemPrice;
+       try {
+        itemPrice = Double.parseDouble(itemPriceField.getText());
+        if(itemPrice < 0) {
+            JOptionPane.showMessageDialog(window, "Item price cannot be negative");
+            return;
+        }
+       }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(window, "Item price must be a number");
+            return;
+       }
+
+        // Validating and converting availability
+       int availableInt;
+       try {
+        availableInt = Integer.parseInt(itemAvailField.getText());
+        if(availableInt < 0 || availableInt > 1) {
+            JOptionPane.showMessageDialog(window, "Please enter 0 for unavailable and 1 for available");
+            return;
+        }
+       }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(window, "Availability must be 0 or 1");
+            return;
+       }
+
+       boolean available = false;
+       if(availableInt == 1) {
+        available = true;
+       }
+
+      // needs menu id, item name, price, availability
+      // MenuID, ItemName, ItemPrice, Availability
+        // adding menu item
+        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(
+                "INSERT INTO Menu_Item(MenuID, ItemName, ItemPrice, Availability) VALUES (?,?,?,?)")) {
+
+            ps.setInt(1, menuID);
+            ps.setString(2, itemName);
+            ps.setDouble(3, itemPrice);
+            ps.setBoolean(4, available);
             ps.executeUpdate();      // Run INSERT
-
-            output.setText("Added: " + name);
+            JOptionPane.showMessageDialog(window, "Item added");
 
         } catch (Exception ex) {
-            output.setText(ex.getMessage());
+            JOptionPane.showMessageDialog(window, ex.getMessage());
         }
     }
 
-    // ---------- UPDATE Student (UPDATE) ----------
-    private void updateStudent() {
-        output.setText("");
-
-        String name = nameField.getText();
-        String major = majorField.getText();
-
-        if (name.isEmpty() || major.isEmpty()) {
-            output.setText("Both fields required.");
+    // method for updating a menu item
+    private void updateMenuItem(JTextField itemIDField, JTextField itemMenuIDField, JTextField itemNameField, JTextField itemPriceField, JTextField itemAvailField, String username) {
+        // All of the same validation as before with itemIDField added
+        String menuIDString = itemMenuIDField.getText();
+        String itemName = itemNameField.getText();
+        String itemPriceString = itemPriceField.getText(); 
+        String availability = itemAvailField.getText(); 
+        
+        // Simple validation
+        if (menuIDString.isEmpty() || itemName.isEmpty() || itemPriceString.isEmpty() || availability.isEmpty()) {
+            JOptionPane.showMessageDialog(window, "MenuID, itemID, item name, item price, and availability are required. If you don't want to make a change to a specific element, just put its current value in the textbox");
             return;
         }
 
-        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(
-                "UPDATE students SET major=? WHERE name=?")) {
+        // Validating menuID
+       
+    int menuID;
+       try {
+        menuID = Integer.parseInt(itemMenuIDField.getText());
+        if(menuID < 0) {
+            JOptionPane.showMessageDialog(window, "MenuID cannot be negative");
+            return;
+        }
+       }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(window, "MenuID is required and must be a number");
+            return;
+       }
 
-            ps.setString(1, major);
-            ps.setString(2, name);
-            ps.executeUpdate();      // Run UPDATE
 
-            output.setText("Updated: " + name);
+         try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT MenuID FROM Menu WHERE BusinessID = ?")) {
+            ps.setInt(1, businessID(username));
+            ResultSet rs = ps.executeQuery();
+            boolean found = false;
+            // Loop through result rows
+            while (!false && rs.next()) {
+               if(rs.getInt("MenuID") == menuID) {
+                    found = true;
+               }
+            }
+
+            if(!found) {
+                JOptionPane.showMessageDialog(window, "That menu ID doesn't exist.");
+                return;
+            }
+
 
         } catch (Exception ex) {
-            output.setText(ex.getMessage());
+            JOptionPane.showMessageDialog(window, ex);
+        }
+
+        // Validating itemID
+        int itemID;
+       try {
+        itemID = Integer.parseInt(itemIDField.getText());
+        if(itemID < 0) {
+            JOptionPane.showMessageDialog(window, "ItemID cannot be negative");
+            return;
+        }
+       }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(window, "ItemID is required and must be a number");
+            return;
+       }
+
+     
+         try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT MI.ItemID FROM Menu_Item MI JOIN Menu M ON M.MenuID = MI.MenuID WHERE M.BusinessID = ?")) {
+            ps.setInt(1, businessID(username));
+            ResultSet rs = ps.executeQuery();
+            boolean found = false;
+            // Loop through result rows
+            while (!false && rs.next()) {
+               if(rs.getInt("ItemID") == itemID) {
+                    found = true;
+               }
+            }
+
+            if(!found) {
+                JOptionPane.showMessageDialog(window, "That item ID doesn't exist.");
+                return;
+            }
+
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex);
+        }
+
+        // Validating itemPrice
+        double itemPrice;
+       try {
+        itemPrice = Double.parseDouble(itemPriceField.getText());
+        if(itemPrice < 0) {
+            JOptionPane.showMessageDialog(window, "Item price cannot be negative");
+            return;
+        }
+       }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(window, "Item price must be a number");
+            return;
+       }
+
+        // Validating and converting availability
+       int availableInt;
+       try {
+        availableInt = Integer.parseInt(itemAvailField.getText());
+        if(availableInt < 0 || availableInt > 1) {
+            JOptionPane.showMessageDialog(window, "Please enter 0 for unavailable and 1 for available");
+            return;
+        }
+       }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(window, "Availability must be 0 or 1");
+            return;
+       }
+
+       boolean available = false;
+       if(availableInt == 1) {
+        available = true;
+       }
+
+    
+        // adding menu item
+        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(
+                "UPDATE Menu_Item SET MenuID = ?, ItemName = ?, ItemPrice = ?, Availability = ? WHERE ItemID = ?")) {
+
+            ps.setInt(1, menuID);
+            ps.setString(2, itemName);
+            ps.setDouble(3, itemPrice);
+            ps.setBoolean(4, available);
+            ps.setInt(5, itemID);
+            ps.executeUpdate();      // Run INSERT
+            JOptionPane.showMessageDialog(window, "Item updated");
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex.getMessage());
         }
     }
+
+    // method for deleting a menu item
+    private void deleteMenuItem(JTextField itemIDField, String username) {
+        int itemID;
+       try {
+        itemID = Integer.parseInt(itemIDField.getText());
+        if(itemID < 0) {
+            JOptionPane.showMessageDialog(window, "ItemID cannot be negative");
+            return;
+        }
+       }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(window, "ItemID is required and must be a number");
+            return;
+       }
+
+
+         try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT MI.ItemID FROM Menu_Item MI JOIN Menu M ON M.MenuID = MI.MenuID WHERE M.BusinessID = ?")) {
+            ps.setInt(1, businessID(username));
+            ResultSet rs = ps.executeQuery();
+            boolean found = false;
+            // Loop through result rows
+            while (!false && rs.next()) {
+               if(rs.getInt("ItemID") == itemID) {
+                    found = true;
+               }
+            }
+
+            if(!found) {
+                JOptionPane.showMessageDialog(window, "That item ID doesn't exist.");
+                return;
+            }
+
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex);
+        }
+
+
+        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(
+                "DELETE FROM Menu_Item WHERE ItemID=?")) {
+
+            ps.setInt(1, itemID);
+            ps.executeUpdate();      // Run UPDATE
+            JOptionPane.showMessageDialog(window, "Item deleted");
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex.getMessage());
+        }
+    }
+    // --------------------------------------------------------------------------------------------------
+
+    // ---------------- Methods related to orders ---------------------------------------------------
+    // viewing all of the orders for a business
+    private void viewOrders(String username, JTextArea ordersOutput) {
+         int businessID = businessID(username);
+
+        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT O.OrderID, O.OrderDate, C.CustomerName, O.StatusID, P.PaymentMethod, L.Address FROM Orders O JOIN Customer C ON O.CustomerID = C.CustomerID JOIN Payment_Method P ON O.PaymentID = P.PaymentID JOIN Location L ON O.LocationID = L.LocationID WHERE O.BusinessID = ? ORDER BY O.StatusID")) {
+            ps.setInt(1, businessID);
+            ResultSet rs = ps.executeQuery();
+            
+            // Loop through result rows
+            while (rs.next()) {
+                ordersOutput.append("OrderID: " +
+                        rs.getInt("OrderID") + " | OrderDate: "
+                        + rs.getDate("OrderDate") + " | CustomerName: "
+                        + rs.getString("CustomerName") + " | Status: "
+                        + findStatus(Integer.parseInt(rs.getString("StatusID"))) + " | PaymentMethod: "
+                        + rs.getString("PaymentMethod") + " | Address: " 
+                        + rs.getString("Address") + "\n"
+                );
+                try (Connection conn2 = getConn(); PreparedStatement ps2 = conn2.prepareStatement("SELECT MI.ItemName, OI.Quantity, MI.ItemPrice*OI.Quantity AS TotalPrice FROM Order_Item OI JOIN Menu_Item MI ON MI.ItemID = OI.ItemID WHERE OI.OrderID = ?")) {
+                    ps2.setInt(1, rs.getInt("OrderID"));
+                    ResultSet rs2 = ps2.executeQuery();
+                    ordersOutput.append("Order Items:" + "\n");
+                    while(rs2.next()) {
+                        ordersOutput.append("ItemName: " +
+                            rs2.getString("ItemName") + " | Quantity: "
+                            + rs2.getInt("Quantity") + " | Total Price: "
+                            + rs2.getDouble("TotalPrice") + "\n"
+                    );
+            }
+        ordersOutput.append("----------------------------------------------------------------" + "\n");
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(window, ex.getMessage());
+                }
+
+            }
+             
+
+            /*
+            SELECT MI.ItemName, OI.Quantity, MI.ItemPrice*OI.Quantity AS TotalPrice
+            FROM Order_Item OI
+            JOIN Menu_Item MI ON MI.ItemID = OI.ItemID
+            WHERE OI.OrderID = ?;
+
+             */
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex.getMessage());
+        }
+
+    }
+
+    private String findStatus(int statusID) {
+        String statusText = switch (statusID) {
+            case -1 -> "Canceled";
+            case 0 -> "Unplaced";
+            case 1 -> "Placed";
+            case 2 -> "Accepted";
+            case 3 -> "In Progress";
+            case 4 -> "In Transit";
+            case 5 -> "Arrived";
+            default -> "Unknown";
+        };
+
+        return statusText;
+    }
+
+    // updating an order -- businesses can only update the status
+    private void updateOrder(JTextField orderIDField, JTextField statusField, String username) {
+        String orderIDString = orderIDField.getText();
+        String statusIDString = statusField.getText();
+      
+        
+        // Simple validation
+        if (orderIDString.isEmpty() || statusIDString.isEmpty()) {
+            JOptionPane.showMessageDialog(window, "OrderID and StatusID are required");
+            return;
+        }
+
+        // Validating orderID
+       
+    int orderID;
+       try {
+        orderID = Integer.parseInt(orderIDField.getText());
+        if(orderID < 0) {
+            JOptionPane.showMessageDialog(window, "OrderID cannot be negative");
+            return;
+        }
+       }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(window, "OrderID is required and must be a number");
+            return;
+       }
+
+
+         try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT OrderID FROM Orders WHERE BusinessID = ?")) {
+            ps.setInt(1, businessID(username));
+            ResultSet rs = ps.executeQuery();
+            boolean found = false;
+            // Loop through result rows
+            while (!false && rs.next()) {
+               if(rs.getInt("OrderID") == orderID) {
+                    found = true;
+               }
+            }
+
+            if(!found) {
+                JOptionPane.showMessageDialog(window, "That order ID doesn't exist.");
+                return;
+            }
+
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex);
+        }
+
+            // Validating statusID
+       
+        int statusID;
+       try {
+        statusID = Integer.parseInt(statusField.getText());
+        if(statusID < 0 && statusID != -1) {
+            JOptionPane.showMessageDialog(window, "StatusID cannot be less than -1");
+            return;
+        } else if (statusID > 5) {
+            JOptionPane.showMessageDialog(window, "StatusID cannot be greater than 5");
+            return;
+        } else if (statusID == -1) {
+            JOptionPane.showMessageDialog(window, "Please use the cancel order button to cancel an order");
+            return;
+        }
+       }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(window, "StatusID is required and must be an integer");
+            return;
+       }
+
+       // Get the current status of the order to ensure the business isn't moving the status backwards
+       
+       try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT StatusID FROM Orders WHERE OrderID = ?")) {
+            ps.setInt(1, orderID);
+            ResultSet rs = ps.executeQuery();
+            // Loop through result rows
+            rs.next();
+            int currentStatus = rs.getInt("StatusID");
+            if (currentStatus == -1) {
+                JOptionPane.showMessageDialog(window, "You cannot change the status of a canceled order");
+                return;
+            } else if (currentStatus > 2) {
+                JOptionPane.showMessageDialog(window, "You cannot change the status of an order in progress");
+                return;
+            } else if (currentStatus > statusID) {
+                JOptionPane.showMessageDialog(window, "You cannot move the status backwards");
+                return;
+            } else if (statusID > currentStatus+1) {
+                JOptionPane.showMessageDialog(window, "You cannot move forward more than 1 status");
+                return;
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex);
+        }
+
+        // if the program reaches this point, the user entered a valid status and it can be updated
+
+        
+        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(
+                "UPDATE Orders SET StatusID=? WHERE OrderID=?")) {
+
+            ps.setInt(1, statusID);
+            ps.setInt(2, orderID);
+            ps.executeUpdate();      // Run UPDATE
+            JOptionPane.showMessageDialog(window, "Status updated");
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex.getMessage());
+        }
+
+         
+
+    }
+
+    // deleting an order: can only delete it if the status is pending
+    private void cancelOrder(JTextField orderIDField, String username) {
+        String orderIDString = orderIDField.getText();
+      
+      
+        
+        // Simple validation
+        if (orderIDString.isEmpty()) {
+            JOptionPane.showMessageDialog(window, "OrderID is required");
+            return;
+        }
+
+        // Validating orderID
+       
+    int orderID;
+       try {
+        orderID = Integer.parseInt(orderIDField.getText());
+        if(orderID < 0) {
+            JOptionPane.showMessageDialog(window, "OrderID cannot be negative");
+            return;
+        }
+       }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(window, "OrderID is required and must be a number");
+            return;
+       }
+
+
+         try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT OrderID FROM Orders WHERE BusinessID = ?")) {
+            ps.setInt(1, businessID(username));
+            ResultSet rs = ps.executeQuery();
+            boolean found = false;
+            // Loop through result rows
+            while (!false && rs.next()) {
+               if(rs.getInt("OrderID") == orderID) {
+                    found = true;
+               }
+            }
+
+            if(!found) {
+                JOptionPane.showMessageDialog(window, "That order ID doesn't exist.");
+                return;
+            }
+
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex);
+        }
+
+        // Get the current status of the order to ensure the business isn't deleting an order in progress or later
+       
+       try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT StatusID FROM Orders WHERE OrderID = ?")) {
+            ps.setInt(1, orderID);
+            ResultSet rs = ps.executeQuery();
+            // Loop through result rows
+            rs.next();
+            int currentStatus = rs.getInt("StatusID");
+            if (currentStatus == -1) {
+                JOptionPane.showMessageDialog(window, "You cannot cancel a canceled order");
+                return;
+            } else if (currentStatus > 2) {
+                JOptionPane.showMessageDialog(window, "You cannot cancel an order that's in progress or in a later stage");
+                return;
+            } 
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex);
+        }
+
+        // can now safely cancel the order
+        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(
+                "UPDATE Orders SET StatusID = -1 WHERE OrderID=?")) {
+
+            ps.setInt(1, orderID);
+            ps.executeUpdate();      // Run UPDATE
+            JOptionPane.showMessageDialog(window, "Order canceled");
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex.getMessage());
+        }
+    }
+
 
 
  protected MaskFormatter createFormatter(String s) {
@@ -450,109 +1228,6 @@ public class BusinessUI extends JFrame {
 }
    
 
-  /*   public static void BusinessLogin() {
-         JFrame window = new JFrame("Business Login");
-
-        // Close operation when the window is closed
-
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Close operation when the window is closed
-        
-        // Set the initial size of the window
-        window.setSize(500, 400);
-
-      //  window.setLayout(new BorderLayout());
-
-
-      //   JPanel login = new JPanel(); 
-      //   login.setLayout(new BoxLayout(login, BoxLayout.Y_AXIS));
-
-     //   login.add(new JLabel("Username:"));
-        JTextField usernameField = new JTextField();
-        usernameField.setPreferredSize(new Dimension(200, 30));
-        usernameField.setMaximumSize(new Dimension(200, 30));
-       // usernameField.setAlignmentX(Component.CENTER_ALIGNMENT);
-      //  login.add(usernameField);
-
-      //  login.add(new JLabel("Password:"));
-        JTextField passwordField = new JTextField();
-        passwordField.setPreferredSize(new Dimension(200, 30));
-        passwordField.setMaximumSize(new Dimension(200, 30));
-       // passwordField.setAlignmentX(Component.CENTER_ALIGNMENT);
-     //   login.add(passwordField);
-      //  window.add(login);
-        window.setVisible(true);
-    } */
-
-   
-
- /*    public static void BusinessLogin() {
-        JTextField jTextField1 = new JTextField();
-        JLabel  jLabel1 = new javax.swing.JLabel();
-        JLabel jLabel2 = new javax.swing.JLabel();
-        JTextField jTextField2 = new javax.swing.JTextField();
-        JButton jButton1 = new javax.swing.JButton();
-        JButton jButton2 = new javax.swing.JButton();
-
-         JFrame window = new JFrame("Business Login");
-         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Close operation when the window is closed
-        
-        // Set the initial size of the window
-        window.setSize(500, 400);
-        
-        
-
-
-        jLabel1.setText("Username:");
-
-        jLabel2.setText("Password:");
-
-
-        jButton1.setText("Login");
-
-        jButton2.setText("Register");
-
-        GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(103, 103, 103)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(33, 33, 33)
-                        .addComponent(jButton2))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(28, 28, 28)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(119, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(78, 78, 78)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(33, 33, 33)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addContainerGap(104, Short.MAX_VALUE))
-        );
-    } */
-
-
-   
 
     // ---------- Main Method ----------
     public static void main(String[] args) {
