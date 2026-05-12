@@ -87,7 +87,7 @@ public class CustomerRestaurantBrowseUI extends JFrame {
             if (activeOrderID != -1) {
                 try (Connection conn = getConn();
                     PreparedStatement ps = conn.prepareStatement(
-                        "UPDATE Orders SET Status = -1 WHERE OrderID = ? AND Status = 0")) {
+                        "UPDATE Orders SET StatusID = -1 WHERE OrderID = ? AND StatusID = 0")) {
                     ps.setInt(1, activeOrderID);
                     ps.executeUpdate();
                 } catch (Exception ex) {
@@ -110,7 +110,7 @@ public class CustomerRestaurantBrowseUI extends JFrame {
             if (activeOrderID != -1) {
                 try (Connection conn = getConn();
                     PreparedStatement ps = conn.prepareStatement(
-                        "UPDATE Orders SET Status = -1 WHERE OrderID = ? AND Status = 0")) {
+                        "UPDATE Orders SET StatusID = -1 WHERE OrderID = ? AND StatusID = 0")) {
                     ps.setInt(1, activeOrderID);
                     ps.executeUpdate();
                 } catch (Exception ex) {
@@ -169,7 +169,7 @@ public class CustomerRestaurantBrowseUI extends JFrame {
 private int getOrCreateOrder() {
     try (Connection conn = getConn();
          PreparedStatement ps = conn.prepareStatement(
-            "SELECT OrderID FROM Orders WHERE CustomerID = ? AND BusinessID = ? AND Status = 0 LIMIT 1")) {
+            "SELECT OrderID FROM Orders WHERE CustomerID = ? AND BusinessID = ? AND StatusID = 0 LIMIT 1")) {
         ps.setInt(1, customerID);
         ps.setInt(2, businessID);
         ResultSet rs = ps.executeQuery();
@@ -184,10 +184,11 @@ private int getOrCreateOrder() {
     // Create order with a placeholder PaymentID set to card as default value, users can update this in checkout
     try (Connection conn = getConn();
          PreparedStatement ps = conn.prepareStatement(
-            "INSERT INTO Orders (CustomerID, BusinessID, PaymentID, OrderDate, Status) VALUES (?, ?, 1, NOW(), 0)",
+            "INSERT INTO Orders (CustomerID, BusinessID, PaymentID, OrderDate, StatusID, LocationID) VALUES (?, ?, 1, NOW(), 0, ?)",
             PreparedStatement.RETURN_GENERATED_KEYS)) {
         ps.setInt(1, customerID);
         ps.setInt(2, businessID);
+        ps.setInt(3, getLocation(customerID));
         ps.executeUpdate();
         ResultSet keys = ps.getGeneratedKeys();
         if (keys.next()) {
@@ -198,6 +199,23 @@ private int getOrCreateOrder() {
     }
     return -1; // Final fall back if all else fails
 }
+
+    private int getLocation(int customerID) {
+        try (Connection conn = getConn();
+         PreparedStatement ps = conn.prepareStatement(
+            "SELECT LocationID FROM Customer WHERE CustomerID = ?")) {
+        ps.setInt(1, customerID);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt("LocationID");
+        } else {
+            return 0;
+        }
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(window, "Error getting location:\n" + ex.getMessage());
+        return -1;
+    }
+    }
 
     /**
      * addItemToOrder is called when a user selects a menu item to order and a current order

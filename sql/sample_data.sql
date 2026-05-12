@@ -79,9 +79,9 @@ INSERT INTO Payment_Method(PaymentMethod) VALUES
 
 INSERT INTO Orders (CustomerID, BusinessID, PaymentID, OrderDate, StatusID, LocationID) VALUES
 (3, 2, 3, '2026-04-20', 2, 15),
-(2, 8, 2, '2026-04-20', 1, 3),
+(2, 8, 2, '2026-04-20', 3, 3),
 (5, 9, 1, '2026-04-20', 2, 0),
-(4, 1, 1, '2026-04-20', 1, 12),
+(4, 1, 1, '2026-04-20', 3, 12),
 (6, 6, 3, '2026-04-20', 2, 4),
 (9, 4, 2, '2026-04-20', 1, 5),
 (1, 4, 1, '2026-04-20', 2, 1),
@@ -93,10 +93,9 @@ INSERT INTO Delivery
 (OrderID, EmployeeID, DeliveryFee)
 VALUES
 (1, 5, 4.99),
-(1, 7, 2.50),
 (2, Null, 5.99),
 (3, 1, 3.49),
-(4, 8, 6.25),
+(4, Null, 6.25),
 (5, 4, 1.99),
 (6, 9, 4.50),
 (7, 3, 7.99),

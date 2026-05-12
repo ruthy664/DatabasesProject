@@ -2,7 +2,6 @@
 import java.awt.*; // Swing GUI classes (JFrame, JButton, JTextField, etc.)
 import java.sql.*; // Layout managers like BorderLayout, GridLayout
 import javax.swing.*;
-import javax.swing.text.MaskFormatter; // JDBC classes for database connection
 
 public class DeliveryDriverUI extends JFrame {
 
@@ -12,8 +11,6 @@ public class DeliveryDriverUI extends JFrame {
     String password = "password"; // Replace this with your database password
 
     // Input fields and output area
-    JTextField nameField, majorField;
-    JTextArea output;
     JFrame window;
     JPanel page1;
     JPanel updateInput;
@@ -484,9 +481,5 @@ public class DeliveryDriverUI extends JFrame {
         }
     }
 
-    // ---------- Main Method ----------
-    public static void main(String[] args) {
-        new DeliveryDriverLogin();
-
-    }
+  
 }

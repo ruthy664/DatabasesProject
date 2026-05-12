@@ -18,7 +18,7 @@ public class CustomerOrdersUI {
     // DATABSE INFORMATION, REVIEW BEFORE LAUNCHING!!!
     String url = "jdbc:mysql://localhost:3306/food_delivery";
     String user = "root";
-    String password = "password";
+    String password = "password!";
 
     JFrame window;
     int customerID;
@@ -44,7 +44,7 @@ public class CustomerOrdersUI {
         // Load all orders for this customer
         try (Connection conn = getConn();
              PreparedStatement ps = conn.prepareStatement(
-                "SELECT O.OrderID, B.BusinessName, O.OrderDate, O.Status, PM.PaymentMethod " +
+                "SELECT O.OrderID, B.BusinessName, O.OrderDate, O.StatusID, PM.PaymentMethod " +
                 "FROM Orders O " +
                 "JOIN Business B ON B.BusinessID = O.BusinessID " +
                 "JOIN Payment_Method PM ON PM.PaymentID = O.PaymentID " +
@@ -60,7 +60,7 @@ public class CustomerOrdersUI {
                 int orderID = rs.getInt("OrderID");
                 String businessName = rs.getString("BusinessName");
                 String date = rs.getString("OrderDate");
-                int status = rs.getInt("Status");
+                int status = rs.getInt("StatusID");
                 String payment = rs.getString("PaymentMethod");
 
                 // Converts the numeric statusID field to a human readable form
