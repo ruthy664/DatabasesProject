@@ -5,12 +5,13 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.MaskFormatter;        // JDBC classes for database connection
 
+
 public class BusinessUI extends JFrame {
 
     // Database connection details
     String url = "jdbc:mysql://localhost:3306/food_delivery";
-    String user = "root"; // replace with your database username
-    String password = "password"; // replace with your database password
+    String user = "root";
+    String password = "Pleasework4!";
 
     // Input fields and output area
     JTextField nameField, majorField;
@@ -222,9 +223,8 @@ public class BusinessUI extends JFrame {
         updateItemBtn.addActionListener(e -> updateMenuItem(itemIDField, itemMenuIDField, itemNameField, itemPriceField, itemAvailField, username)); // needs item id, menu id, item name, price, availability
         deleteItemBtn.addActionListener(e -> deleteMenuItem(itemIDField, username)); // needs item id
 
-       
+      // ------------------------------------------------------------------------------------------------------------------- 
 
-        //page2.add(itemsInput, BorderLayout.CENTER);
 
       
 
@@ -245,28 +245,109 @@ public class BusinessUI extends JFrame {
         // item id
 
 
+        // ---------------- elements for orders ---------------------------
         // Orders tab - updating orders and creating deliveries
         // updating status
         // can select an order and update its status
         // can only update status
-        // select an order to create a delivery
-        JPanel page3 = new JPanel();
-        page3.add(new JLabel("This is Tab 3"));
+        // select an order to create a delivery - this will be done in the deliveries tab
 
+        // a business cannot create an order
+        // the only fields a business can update on an order are the status (anything else can only be changed by the customer)
+        // a business can only delete an order if the status is pending or placed, but once it's being prepared it can't be modified
+        // so methods for this tab are: view orders, edit order status, delete order
+        // needed fields: all of them for viewing, orderID for editing status, status and orderID for deleting
+        // whenever they edit a status, they can only move forward: so check that the new status is greater than the current
+
+        JPanel page3 = new JPanel(new BorderLayout());
+
+        JPanel ordersInput = new JPanel(new GridLayout(5,2));
+        JPanel ordersButtons = new JPanel(new GridLayout(1,3));
+        JTextArea ordersOutput = new JTextArea();
+        ordersOutput.setEditable(false);
+        ordersOutput.setBorder(new EmptyBorder(0, 0, 100, 0));
+        page3.add(ordersOutput, BorderLayout.NORTH);
+
+        // Buttons
+        JButton viewOrdersBtn = new JButton("View Orders");
+        JButton updateOrderBtn = new JButton("Update Order Status");
+        JButton cancelOrderBtn = new JButton("Cancel an Order");
+        ordersButtons.add(viewOrdersBtn);
+        ordersButtons.add(updateOrderBtn);
+        ordersButtons.add(cancelOrderBtn);
+        page3.add(ordersButtons, BorderLayout.SOUTH);
+
+        // Input fields
+        ordersInput.add(new JLabel("Order ID (the ID of the order you would like to update or delete): "));
+        JTextField orderIDField = new JTextField();
+        orderIDField.setPreferredSize(new Dimension(200, 30));
+        ordersInput.add(orderIDField);
+   
+        ordersInput.add(new JLabel("Possible Status Values: "));
+        JLabel statuses1 = new JLabel("-1 - Canceled | 0 - Unplaced | 1 - Placed");
+        statuses1.setPreferredSize(new Dimension(200, 30));
+        ordersInput.add(statuses1);
+        ordersInput.add(new JLabel(""));
+        JLabel statuses2 = new JLabel("2 - Accepted | 3 - In Progress | 4 - In Transit");
+        statuses2.setPreferredSize(new Dimension(200, 30));
+        ordersInput.add(statuses2);
+        ordersInput.add(new JLabel(""));
+        JLabel statuses3 = new JLabel("5 - Arrived");
+        statuses3.setPreferredSize(new Dimension(200, 30));
+        ordersInput.add(statuses3);
+
+        ordersInput.add(new JLabel("Status (please enter one of the numerical options listed above): "));
+        JTextField statusField = new JTextField();
+        statusField.setPreferredSize(new Dimension(200, 30));
+        ordersInput.add(statusField);
+
+        
+
+        JPanel ordersHolder = new JPanel(new FlowLayout());
+        ordersHolder.add(ordersInput);
+        page3.add(ordersHolder, BorderLayout.CENTER);
+
+        
+        // Button listeners
+        viewOrdersBtn.addActionListener(e -> { 
+            ordersOutput.setText("");
+            viewOrders(username, ordersOutput); });
+        updateOrderBtn.addActionListener(e -> updateOrder(orderIDField, statusField, username)); 
+        cancelOrderBtn.addActionListener(e -> cancelOrder(orderIDField, username)); 
+
+
+        // ----------------------------------------------------------------------------------------------------------
+
+        // Elements for deliveries -----------------------------------------------------------------------
         // Deliveries tab - updating deliveries, can change who's assigned to the delivery if they aren't already in transit
-        // updating status
-        // updating the status of a delivery
         // changing who's assigned to the delivery if they haven't taken the delivery out
+        // can update the delivery fee (delivery fee is what the business wants but cannot exceed 10 dollars)
+        // can delete a delivery - need deliveryID to do so, can only delete a delivery if the order doesn't have the in transit stat
+        // can NOT change orderID or locationID (locationID may no longer be a field depending on how my group members respond)
+        // can create a delivery, to do so orderID, employeeID, locationID, and delivery fee are needed
         JPanel page4 = new JPanel();
         page4.add(new JLabel("This is Tab 4"));
 
+
+        // ----------------------------------------------------------------------------------------------
+
+        // Elements for the revenue tab -------------------------------------------------------------------
         // Revenue tab
         // calculating revenue. this will just be a display
+        // Find the total revenue for a business (per order breakdown)
+        // Find the total revenue for a business (overall total)
+        // so the fields needed here are just 2 buttons, displayed on top: find revenue per order breakdown, find revenue overall
+
         JPanel page5 = new JPanel();
         page5.add(new JLabel("This is Tab 5"));
 
         // Updating business info tab
         // just updating their info
+        // all fields required, will display a similar message as the update menu item method does when the user doesn't fill all
+        // fields
+        // or, each field will have a button next to it, with individual methods for updating each component (this may be easier)
+        // fields that can be updated are business name, username (only if the username doesn't already exist), password,
+        // cuisine, phone number (copy phone number validation from registration), locationID (again, copy registration)
         JPanel page6 = new JPanel();
         page6.add(new JLabel("This is Tab 6"));
 
@@ -868,80 +949,271 @@ public class BusinessUI extends JFrame {
     }
     // --------------------------------------------------------------------------------------------------
 
+    // ---------------- Methods related to orders ---------------------------------------------------
+    // viewing all of the orders for a business
+    private void viewOrders(String username, JTextArea ordersOutput) {
+         int businessID = businessID(username);
 
-
-    // ---------- VIEW Students (SELECT) ----------
-    private void viewStudents() {
-        output.setText("");  // Clear output
-
-        try (Connection conn = getConn(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT * FROM students")) {
-
+        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT O.OrderID, O.OrderDate, C.CustomerName, O.StatusID, P.PaymentMethod, L.Address FROM Orders O JOIN Customer C ON O.CustomerID = C.CustomerID JOIN Payment_Method P ON O.PaymentID = P.PaymentID JOIN Location L ON O.LocationID = L.LocationID WHERE O.BusinessID = ? ORDER BY O.StatusID")) {
+            ps.setInt(1, businessID);
+            ResultSet rs = ps.executeQuery();
+            
             // Loop through result rows
             while (rs.next()) {
-                output.append(
-                        rs.getInt("id") + " | "
-                        + rs.getString("name") + " | "
-                        + rs.getString("major") + "\n"
+                ordersOutput.append("OrderID: " +
+                        rs.getInt("OrderID") + " | OrderDate: "
+                        + rs.getDate("OrderDate") + " | CustomerName: "
+                        + rs.getString("CustomerName") + " | Status: "
+                        + findStatus(Integer.parseInt(rs.getString("StatusID"))) + " | PaymentMethod: "
+                        + rs.getString("PaymentMethod") + " | Address: " 
+                        + rs.getString("Address") + "\n"
                 );
+                try (Connection conn2 = getConn(); PreparedStatement ps2 = conn2.prepareStatement("SELECT MI.ItemName, OI.Quantity, MI.ItemPrice*OI.Quantity AS TotalPrice FROM Order_Item OI JOIN Menu_Item MI ON MI.ItemID = OI.ItemID WHERE OI.OrderID = ?")) {
+                    ps2.setInt(1, rs.getInt("OrderID"));
+                    ResultSet rs2 = ps2.executeQuery();
+                    ordersOutput.append("Order Items:" + "\n");
+                    while(rs2.next()) {
+                        ordersOutput.append("ItemName: " +
+                            rs2.getString("ItemName") + " | Quantity: "
+                            + rs2.getInt("Quantity") + " | Total Price: "
+                            + rs2.getDouble("TotalPrice") + "\n"
+                    );
+            }
+        ordersOutput.append("----------------------------------------------------------------" + "\n");
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(window, ex.getMessage());
+                }
+
+            }
+             
+
+            /*
+            SELECT MI.ItemName, OI.Quantity, MI.ItemPrice*OI.Quantity AS TotalPrice
+            FROM Order_Item OI
+            JOIN Menu_Item MI ON MI.ItemID = OI.ItemID
+            WHERE OI.OrderID = ?;
+
+             */
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex.getMessage());
+        }
+
+    }
+
+    private String findStatus(int statusID) {
+        String statusText = switch (statusID) {
+            case -1 -> "Canceled";
+            case 0 -> "Unplaced";
+            case 1 -> "Placed";
+            case 2 -> "Accepted";
+            case 3 -> "In Progress";
+            case 4 -> "In Transit";
+            case 5 -> "Arrived";
+            default -> "Unknown";
+        };
+
+        return statusText;
+    }
+
+    // updating an order -- businesses can only update the status
+    private void updateOrder(JTextField orderIDField, JTextField statusField, String username) {
+        String orderIDString = orderIDField.getText();
+        String statusIDString = statusField.getText();
+      
+        
+        // Simple validation
+        if (orderIDString.isEmpty() || statusIDString.isEmpty()) {
+            JOptionPane.showMessageDialog(window, "OrderID and StatusID are required");
+            return;
+        }
+
+        // Validating orderID
+       
+    int orderID;
+       try {
+        orderID = Integer.parseInt(orderIDField.getText());
+        if(orderID < 0) {
+            JOptionPane.showMessageDialog(window, "OrderID cannot be negative");
+            return;
+        }
+       }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(window, "OrderID is required and must be a number");
+            return;
+       }
+
+
+         try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT OrderID FROM Orders WHERE BusinessID = ?")) {
+            ps.setInt(1, businessID(username));
+            ResultSet rs = ps.executeQuery();
+            boolean found = false;
+            // Loop through result rows
+            while (!false && rs.next()) {
+               if(rs.getInt("OrderID") == orderID) {
+                    found = true;
+               }
+            }
+
+            if(!found) {
+                JOptionPane.showMessageDialog(window, "That order ID doesn't exist.");
+                return;
+            }
+
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex);
+        }
+
+            // Validating statusID
+       
+        int statusID;
+       try {
+        statusID = Integer.parseInt(statusField.getText());
+        if(statusID < 0 && statusID != -1) {
+            JOptionPane.showMessageDialog(window, "StatusID cannot be less than -1");
+            return;
+        } else if (statusID > 5) {
+            JOptionPane.showMessageDialog(window, "StatusID cannot be greater than 5");
+            return;
+        } else if (statusID == -1) {
+            JOptionPane.showMessageDialog(window, "Please use the cancel order button to cancel an order");
+            return;
+        }
+       }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(window, "StatusID is required and must be an integer");
+            return;
+       }
+
+       // Get the current status of the order to ensure the business isn't moving the status backwards
+       
+       try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT StatusID FROM Orders WHERE OrderID = ?")) {
+            ps.setInt(1, orderID);
+            ResultSet rs = ps.executeQuery();
+            // Loop through result rows
+            rs.next();
+            int currentStatus = rs.getInt("StatusID");
+            if (currentStatus == -1) {
+                JOptionPane.showMessageDialog(window, "You cannot change the status of a canceled order");
+                return;
+            } else if (currentStatus > 2) {
+                JOptionPane.showMessageDialog(window, "You cannot change the status of an order in progress");
+                return;
+            } else if (currentStatus > statusID) {
+                JOptionPane.showMessageDialog(window, "You cannot move the status backwards");
+                return;
+            } else if (statusID > currentStatus+1) {
+                JOptionPane.showMessageDialog(window, "You cannot move forward more than 1 status");
+                return;
             }
 
         } catch (Exception ex) {
-            output.setText(ex.getMessage());
-        }
-    }
-
-    // ---------- ADD Student (INSERT) ----------
-    private void addStudent() {
-        output.setText("");
-
-        String name = nameField.getText();
-        String major = majorField.getText();
-
-        // Simple validation
-        if (name.isEmpty() || major.isEmpty()) {
-            output.setText("Both fields required.");
-            return;
+            JOptionPane.showMessageDialog(window, ex);
         }
 
+        // if the program reaches this point, the user entered a valid status and it can be updated
+
+        
         try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(
-                "INSERT INTO students(name, major) VALUES (?, ?)")) {
+                "UPDATE Orders SET StatusID=? WHERE OrderID=?")) {
 
-            ps.setString(1, name);
-            ps.setString(2, major);
-            ps.executeUpdate();      // Run INSERT
-
-            output.setText("Added: " + name);
-
-        } catch (Exception ex) {
-            output.setText(ex.getMessage());
-        }
-    }
-
-    // ---------- UPDATE Student (UPDATE) ----------
-    private void updateStudent() {
-        output.setText("");
-
-        String name = nameField.getText();
-        String major = majorField.getText();
-
-        if (name.isEmpty() || major.isEmpty()) {
-            output.setText("Both fields required.");
-            return;
-        }
-
-        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(
-                "UPDATE students SET major=? WHERE name=?")) {
-
-            ps.setString(1, major);
-            ps.setString(2, name);
+            ps.setInt(1, statusID);
+            ps.setInt(2, orderID);
             ps.executeUpdate();      // Run UPDATE
-
-            output.setText("Updated: " + name);
+            JOptionPane.showMessageDialog(window, "Status updated");
 
         } catch (Exception ex) {
-            output.setText(ex.getMessage());
+            JOptionPane.showMessageDialog(window, ex.getMessage());
+        }
+
+         
+
+    }
+
+    // deleting an order: can only delete it if the status is pending
+    private void cancelOrder(JTextField orderIDField, String username) {
+        String orderIDString = orderIDField.getText();
+      
+      
+        
+        // Simple validation
+        if (orderIDString.isEmpty()) {
+            JOptionPane.showMessageDialog(window, "OrderID is required");
+            return;
+        }
+
+        // Validating orderID
+       
+    int orderID;
+       try {
+        orderID = Integer.parseInt(orderIDField.getText());
+        if(orderID < 0) {
+            JOptionPane.showMessageDialog(window, "OrderID cannot be negative");
+            return;
+        }
+       }
+        catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(window, "OrderID is required and must be a number");
+            return;
+       }
+
+
+         try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT OrderID FROM Orders WHERE BusinessID = ?")) {
+            ps.setInt(1, businessID(username));
+            ResultSet rs = ps.executeQuery();
+            boolean found = false;
+            // Loop through result rows
+            while (!false && rs.next()) {
+               if(rs.getInt("OrderID") == orderID) {
+                    found = true;
+               }
+            }
+
+            if(!found) {
+                JOptionPane.showMessageDialog(window, "That order ID doesn't exist.");
+                return;
+            }
+
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex);
+        }
+
+        // Get the current status of the order to ensure the business isn't deleting an order in progress or later
+       
+       try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT StatusID FROM Orders WHERE OrderID = ?")) {
+            ps.setInt(1, orderID);
+            ResultSet rs = ps.executeQuery();
+            // Loop through result rows
+            rs.next();
+            int currentStatus = rs.getInt("StatusID");
+            if (currentStatus == -1) {
+                JOptionPane.showMessageDialog(window, "You cannot cancel a canceled order");
+                return;
+            } else if (currentStatus > 2) {
+                JOptionPane.showMessageDialog(window, "You cannot cancel an order that's in progress or in a later stage");
+                return;
+            } 
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex);
+        }
+
+        // can now safely cancel the order
+        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement(
+                "UPDATE Orders SET StatusID = -1 WHERE OrderID=?")) {
+
+            ps.setInt(1, orderID);
+            ps.executeUpdate();      // Run UPDATE
+            JOptionPane.showMessageDialog(window, "Order canceled");
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex.getMessage());
         }
     }
+
 
 
  protected MaskFormatter createFormatter(String s) {

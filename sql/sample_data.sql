@@ -68,7 +68,7 @@ INSERT INTO Business(Username, BusinessPassword, LocationID, BusinessName, Cuisi
 ('cwok', 'city', 14, 'City Wok Express', "Chinese", '410-555-2006'),
 ('sdeli', 'sunrise', 7, 'Sunrise Deli', NULL, '410-555-2007'),
 ('ocafe', 'oak', 10, 'Oak & Oven Cafe', "Cafe", '410-555-2008'),
-('cburger', 'capital', 0, 'Capital Burger House', "American", '410-555-2009'),
+('cburger', 'capital', 1, 'Capital Burger House', "American", '410-555-2009'),
 ('bharbor', 'blue', 11, 'Blue Harbor Sushi', "Chinese", '410-555-2010');
 
 INSERT INTO Payment_Method(PaymentMethod) VALUES
@@ -92,7 +92,7 @@ INSERT INTO Orders (CustomerID, BusinessID, PaymentID, OrderDate, StatusID, Loca
 INSERT INTO Delivery 
 (OrderID, EmployeeID, DeliveryFee)
 VALUES
-(0, 5, 4.99),
+(1, 5, 4.99),
 (1, 7, 2.50),
 (2, 2, 5.99),
 (3, 1, 3.49),
@@ -101,7 +101,7 @@ VALUES
 (6, 9, 4.50),
 (7, 3, 7.99),
 (8, 6, 3.75),
-(9, 0, 5.25);
+(9, 1, 5.25);
 
 INSERT INTO Menu(BusinessID, MenuName) VALUES
 (1, 'regular'),
@@ -161,8 +161,8 @@ INSERT INTO Menu_Item (MenuID, ItemName, ItemPrice, Availability) VALUES
 
 
 INSERT INTO Order_Item (OrderID, ItemID, Quantity) VALUES
-(0, 0, 1),
-(0, 1, 2),
+(1, 1, 1),
+(1, 1, 2),
 (1, 3, 2),
 (1, 13, 1),
 (2, 29, 1),
@@ -177,7 +177,7 @@ INSERT INTO Order_Item (OrderID, ItemID, Quantity) VALUES
 (6, 1, 1),
 (7, 27, 2),
 (7, 16, 1),
-(8, 0, 1),
+(8, 1, 1),
 (8, 17, 1),
 (9, 11, 1),
 (9, 20, 1);
