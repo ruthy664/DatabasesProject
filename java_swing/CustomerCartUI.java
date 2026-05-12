@@ -1,9 +1,23 @@
+/*
+AUTHOR: Hudson Cho
+CREATED: 5.11.2026
+UPDATED: 5.11.2026
+DESCRIPTION:
+    The CustomerCartUI is the UI that is launched when a user selects a button to view 
+    their current cart
+NOTES:
+    - In the constructor be sure to change the user and password to the associated user and pasword you
+      are using for mysql
+*/
+
 import java.awt.*;
 import java.sql.*;
 import javax.swing.*;
 
 public class CustomerCartUI {
 
+    
+    // DATABSE INFORMATION, REVIEW BEFORE LAUNCHING!!!
     String url = "jdbc:mysql://localhost:3306/food_delivery";
     String user = "root";
     String password = "password";
@@ -15,6 +29,13 @@ public class CustomerCartUI {
     JPanel itemsPanel;
     JLabel subtotalLabel;
 
+    /**
+     * Creates the main UI for CustomerOrdersUI screen
+     * @param customerID refers to the current customer who is browsing
+     * @param businessID refers to the ID of business user is currently browsing
+     * @param activeOrderID 
+     * @param onCheckout 
+     */
     public CustomerCartUI(int customerID, int businessID, int activeOrderID, Runnable onCheckout) {
         this.customerID = customerID;
         this.businessID = businessID;
@@ -31,7 +52,7 @@ public class CustomerCartUI {
         title.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         window.add(title, BorderLayout.NORTH);
 
-        // Items panel (scrollable)
+        // Scrollable items panel 
         itemsPanel = new JPanel();
         itemsPanel.setLayout(new BoxLayout(itemsPanel, BoxLayout.Y_AXIS));
         window.add(new JScrollPane(itemsPanel), BorderLayout.CENTER);
@@ -39,7 +60,7 @@ public class CustomerCartUI {
         // Bottom panel - payment dropdown + buttons
         JPanel bottomPanel = new JPanel(new BorderLayout());
 
-        // Payment row
+        // Payment drop down methods
         JPanel paymentRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
         paymentRow.add(new JLabel("Payment Method:"));
         JComboBox<String> paymentDropdown = new JComboBox<>(
@@ -68,7 +89,10 @@ public class CustomerCartUI {
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         window.add(bottomPanel, BorderLayout.SOUTH);
 
-        // Checkout button
+        /**
+         *  Event listener for user selecting checkout.
+         * Updates order status from unplaced -> placed
+         */ 
         checkoutBtn.addActionListener(e -> {
             if (activeOrderID == -1) {
                 JOptionPane.showMessageDialog(window, "Your cart is empty!");
@@ -92,7 +116,10 @@ public class CustomerCartUI {
             }
         });
 
-        // Cancel button
+        /**
+         *  Event listener for user selecting cancelOrder.
+         * Updates order status from unplaced -> canceled
+         */ 
         cancelBtn.addActionListener(e -> {
             if (activeOrderID == -1) {
                 JOptionPane.showMessageDialog(window, "No active order to cancel.");
@@ -123,6 +150,7 @@ public class CustomerCartUI {
         window.setVisible(true);
     }
 
+    // Helper function used to populate the cart with items from your currently active order (if any)
     private void loadCart() {
         itemsPanel.removeAll();
 
@@ -147,6 +175,7 @@ public class CustomerCartUI {
             ResultSet rs = ps.executeQuery();
             boolean hasItems = false;
 
+            // Print new entry for every item in your order
             while (rs.next()) {
                 hasItems = true;
                 int itemID = rs.getInt("ItemID");
@@ -194,6 +223,7 @@ public class CustomerCartUI {
         itemsPanel.repaint();
     }
 
+    // Function that is ran when a quantity is updated from the cartUI
     private void updateQuantity(int itemID, int newQty) {
         try (Connection conn = getConn();
              PreparedStatement ps = conn.prepareStatement(
@@ -207,6 +237,7 @@ public class CustomerCartUI {
         }
     }
 
+    // Function taht is ran when quantity is updated from cartUI (removed)
     private void deleteItem(int itemID) {
         try (Connection conn = getConn();
              PreparedStatement ps = conn.prepareStatement(
