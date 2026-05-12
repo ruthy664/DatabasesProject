@@ -4,22 +4,20 @@ import java.sql.*;
 import javax.swing.*;     // Swing GUI classes (JFrame, JButton, JTextField, etc.)
 import javax.swing.border.EmptyBorder;
 
-public class BusinessLogin extends JFrame {
+public class AdminLogin extends JFrame { 
 
     // Database connection details
     String url = "jdbc:mysql://localhost:3306/food_delivery";
-    String user = "root"; // CHANGE THIS TO YOUR DATABASE USERNAME
-    String password = "password"; // CHANGE THIS TO YOUR DATABASE PASSWORD
+    String user = "root";
+    String password = "Pleasework4!";
 
     JTextField usernameField;
     JTextField passwordField;
     JFrame window;
 
-
-    public BusinessLogin() {
-
+    public AdminLogin() {
         // Basic window setup
-        window = new JFrame("Business Login");
+        window = new JFrame("Admin Login");
 
         // Close operation when the window is closed
 
@@ -48,29 +46,20 @@ public class BusinessLogin extends JFrame {
         holder.add(loginFields);
         window.add(holder, BorderLayout.CENTER);
 
-        JPanel loginPageButtons = new JPanel(new GridLayout(1,2, 10, 0));
+        JPanel loginPageButtons = new JPanel(new GridLayout(1,1, 10, 0));
         JButton loginButton = new JButton("Login");
-        JButton registerButton = new JButton("Register");
+      
         
-        JButton backButton = new JButton("Back");
-
         loginPageButtons.add(loginButton);
-        loginPageButtons.add(registerButton);
-        loginPageButtons.add(backButton);
-
+        
         window.add(loginPageButtons, BorderLayout.SOUTH);
 
+        
         window.pack();
-        window.setVisible(true);
+        window.setVisible(true);   
 
         // ---------- Button Click Actions ----------
-        loginButton.addActionListener(e -> loginUser());
-        registerButton.addActionListener(e -> registerBusiness());
-
-        backButton.addActionListener(e -> {
-            window.setVisible(false);
-            new LaunchPage();
-        });
+        loginButton.addActionListener(e -> loginAdmin());
     }
 
     // ---------- Create a Database Connection ----------
@@ -79,7 +68,8 @@ public class BusinessLogin extends JFrame {
         return DriverManager.getConnection(url, user, password);
     }
 
-    private void loginUser() {
+    // business rule is that only registered admin can log-in
+    private void loginAdmin() {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
@@ -90,7 +80,7 @@ public class BusinessLogin extends JFrame {
         }
         
     
-        try (Connection conn = getConn(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT Username FROM Business")) {
+        try (Connection conn = getConn(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery("SELECT Username FROM DatabaseAdmin")) {
             boolean found = false;
             // Loop through result rows
             while (!false && rs.next()) {
@@ -110,14 +100,14 @@ public class BusinessLogin extends JFrame {
 
         // If we've gotten past that point, that means the username exists and has a password
         
-         try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT BusinessPassword FROM Business WHERE Username = ?")) {
+         try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT AdminPassword FROM DatabaseAdmin WHERE Username = ?")) {
            
            ps.setString(1, username);
            ResultSet rs = ps.executeQuery();
            if(rs.next()) {
-           if(rs.getString("BusinessPassword").equals(password)) {
+           if(rs.getString("AdminPassword").equals(password)) {
                 window.setVisible(false);
-                new BusinessUI(username);
+                new AdminUI();
            } else {
                 JOptionPane.showMessageDialog(window, "Incorrect Password");
            }
@@ -130,11 +120,6 @@ public class BusinessLogin extends JFrame {
         }
 
       
-    }
-
-    private void registerBusiness() {
-        window.setVisible(false);
-        new BusinessRegistration();
     }
 
 }
