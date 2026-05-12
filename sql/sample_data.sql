@@ -7,7 +7,6 @@ TRUNCATE TABLE Menu;
 TRUNCATE TABLE Delivery;
 TRUNCATE TABLE Orders;
 TRUNCATE TABLE DatabaseAdmin;
-TRUNCATE TABLE Delivery_Status;
 TRUNCATE TABLE Delivery_Personnel;
 TRUNCATE TABLE Payment_Method;
 TRUNCATE TABLE Business;
