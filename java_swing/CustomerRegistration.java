@@ -71,7 +71,7 @@ public class CustomerRegistration extends JFrame {
         numberField.setPreferredSize(new Dimension(200, 30));
         registrationFields.add(numberField);
 
-        registrationFields.add(new JLabel("Date of birth: "));
+        registrationFields.add(new JLabel("Date of birth (YYYY-MM-DD): "));
         dobField = new JFormattedTextField(createFormatter("####-##-##"));
         dobField.setPreferredSize(new Dimension(200, 30));
         registrationFields.add(dobField);
