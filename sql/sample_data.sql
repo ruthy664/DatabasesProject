@@ -43,33 +43,34 @@ INSERT INTO Location (Address) VALUES
 ('99 Charles Street');
 
 INSERT INTO Customer (CustomerName, Username, CustomerPassword, LocationID, PhoneNumber, Email, DateOfBirth) VALUES
-('Emily Carter', 'ecarter', 'password', 3, '410-555-0182', 'emily.carter@gmail.com', '1998-06-14'),
-('James Wilson', 'jwilson', 'hungry', 7, '410-555-0193', 'jwilson@yahoo.com', '1995-11-02'),
-('Sophia Martinez', 'smartinez', 'password123', 1, '410-555-0176', 'sophia.martinez@gmail.com', '2001-03-22'),
-('Michael Johnson', 'mjohnson', 'supersecret', 10, '410-555-0148', 'mjohnson@hotmail.com', '1992-08-09'),
-('Olivia Brown', 'obrown', 'famished', 5, '410-555-0165', 'olivia.brown@gmail.com', '1999-12-30'),
-('Daniel Lee', 'dlee', 'ordertime', 12, '410-555-0119', 'daniel.lee@gmail.com', '1996-04-18'),
-('Ava Thompson', 'athompson', 'food', 0, '410-555-0137', 'ava.thompson@yahoo.com', '2000-09-25'),
-('Ethan Harris', 'eharris', '123password', 9, '410-555-0154', 'ethan.harris@gmail.com', '1993-02-11'),
-('Isabella Clark', 'iclark', 'idkpassword', 4, '410-555-0128', 'isabella.clark@gmail.com', '1997-07-07'),
-('Noah Lewis', 'nlewis', 'supersecure', 14, '410-555-0189', 'noah.lewis@hotmail.com', '1994-05-19');
+('Emily Carter', 'ecarter', 'password', 4, '410-555-0182', 'emily.carter@gmail.com', '1998-06-14'),
+('James Wilson', 'jwilson', 'hungry', 8, '410-555-0193', 'jwilson@yahoo.com', '1995-11-02'),
+('Sophia Martinez', 'smartinez', 'password123', 2, '410-555-0176', 'sophia.martinez@gmail.com', '2001-03-22'),
+('Michael Johnson', 'mjohnson', 'supersecret', 11, '410-555-0148', 'mjohnson@hotmail.com', '1992-08-09'),
+('Olivia Brown', 'obrown', 'famished', 6, '410-555-0165', 'olivia.brown@gmail.com', '1999-12-30'),
+('Daniel Lee', 'dlee', 'ordertime', 13, '410-555-0119', 'daniel.lee@gmail.com', '1996-04-18'),
+('Ava Thompson', 'athompson', 'food', 1, '410-555-0137', 'ava.thompson@yahoo.com', '2000-09-25'),
+('Ethan Harris', 'eharris', '123password', 10, '410-555-0154', 'ethan.harris@gmail.com', '1993-02-11'),
+('Isabella Clark', 'iclark', 'idkpassword', 3, '410-555-0128', 'isabella.clark@gmail.com', '1997-07-07'),
+('Noah Lewis', 'nlewis', 'supersecure', 15, '410-555-0189', 'noah.lewis@hotmail.com', '1994-05-19');
 
 INSERT INTO DatabaseAdmin (AdminName, Username, AdminPassword) VALUES
+  
 ('John Smith', 'jsmith', 'secretpassword'),
 ('Ezra Bridger', 'ebridger', 'password123'),
 ('Sabine Wren', 'swren', 'databaseadmin');
 
 INSERT INTO Business(Username, BusinessPassword, LocationID, BusinessName, Cuisine, PhoneNumber) VALUES
-('bbites', 'baltimore', 5, 'Baltimore Bites', "American", '410-555-2001'),
-('hgrill', 'harbor', 12, 'Harbor Grill', "American", '410-555-2002'),
-('ucrust', 'urban', 3, 'Urban Crust Pizza', "Pizza", '410-555-2003'),
-('gbowl', 'green', 9, 'Green Bowl Kitchen', "Healthy", '410-555-2004'),
-('mstreet','maple', 1, 'Maple Street Cafe', "Cafe", '410-555-2005'),
-('cwok', 'city', 14, 'City Wok Express', "Chinese", '410-555-2006'),
-('sdeli', 'sunrise', 7, 'Sunrise Deli', NULL, '410-555-2007'),
-('ocafe', 'oak', 10, 'Oak & Oven Cafe', "Cafe", '410-555-2008'),
+('bbites', 'baltimore', 6, 'Baltimore Bites', "American", '410-555-2001'),
+('hgrill', 'harbor', 13, 'Harbor Grill', "American", '410-555-2002'),
+('ucrust', 'urban', 4, 'Urban Crust Pizza', "Pizza", '410-555-2003'),
+('gbowl', 'green', 10, 'Green Bowl Kitchen', "Healthy", '410-555-2004'),
+('mstreet','maple', 2, 'Maple Street Cafe', "Cafe", '410-555-2005'),
+('cwok', 'city', 15, 'City Wok Express', "Chinese", '410-555-2006'),
+('sdeli', 'sunrise', 8, 'Sunrise Deli', NULL, '410-555-2007'),
+('ocafe', 'oak', 11, 'Oak & Oven Cafe', "Cafe", '410-555-2008'),
 ('cburger', 'capital', 1, 'Capital Burger House', "American", '410-555-2009'),
-('bharbor', 'blue', 11, 'Blue Harbor Sushi', "Chinese", '410-555-2010');
+  ('bharbor', 'blue', 12, 'Blue Harbor Sushi', "Chinese", '410-555-2010');
 
 INSERT INTO Payment_Method(PaymentMethod) VALUES
 ('card'),
@@ -78,30 +79,30 @@ INSERT INTO Payment_Method(PaymentMethod) VALUES
 ('venmo');
 
 INSERT INTO Orders (CustomerID, BusinessID, PaymentID, OrderDate, StatusID, LocationID) VALUES
-(3, 1, 3, '2026-04-20', 2, 15),
-(2, 8, 2, '2026-04-20', 3, 3),
-(5, 9, 1, '2026-04-20', 2, 0),
-(4, 1, 1, '2026-04-20', 3, 12),
-(6, 6, 3, '2026-04-20', 2, 4),
-(9, 1, 2, '2026-04-20', 1, 5),
-(1, 4, 1, '2026-04-20', 2, 1),
-(7, 1, 1, '2026-04-20', 1, 9),
-(8, 3, 3, '2026-04-20', 2, 14),
-(4, 5, 2, '2026-04-20', 1, 10);
+(4, 3, 4, '2026-04-20', 4, 15),
+(3, 9, 3, '2026-04-20', 2, 4),
+(6, 10, 2, '2026-04-20', 5, 1),
+(1, 2, 2, '2026-04-20', 2, 13),
+(7, 7, 4, '2026-04-20', 3, 5),
+(10, 5, 3, '2026-04-20', 2, 6),
+(2, 1, 2, '2026-04-20', 4, 2),
+(8, 8, 2, '2026-04-20', 2, 10),
+(9, 4, 4, '2026-04-20', 3, 14),
+(5, 6, 3, '2026-04-20', 2, 11);
 
 INSERT INTO Delivery 
 (OrderID, EmployeeID, DeliveryFee)
 VALUES
 (1, 5, 4.99),
-(2, Null, 5.99),
+(1, 7, 2.50),
+(2, 2, 5.99),
 (3, 1, 3.49),
-(4, Null, 6.25),
+(4, 8, 6.25),
 (5, 4, 1.99),
 (6, 9, 4.50),
 (7, 3, 7.99),
 (8, 6, 3.75),
 (9, 1, 5.25);
-
 INSERT INTO Menu(BusinessID, MenuName) VALUES
 (1, 'regular'),
 (2, 'regular'),
@@ -123,7 +124,6 @@ INSERT INTO Menu(BusinessID, MenuName) VALUES
 (9, 'drinks'),
 (9, 'gluten free'),
 (9, 'vegan');
-
 INSERT INTO Menu_Item (MenuID, ItemName, ItemPrice, Availability) VALUES
 (1, 'Cheeseburger', 8.99, TRUE),
 (1, 'Fries', 3.49, TRUE),
@@ -156,27 +156,24 @@ INSERT INTO Menu_Item (MenuID, ItemName, ItemPrice, Availability) VALUES
 (14, 'Burger Combo', 12.99, FALSE),
 (16, 'Sushi Roll', 13.99, TRUE);
 
-
-
-
 INSERT INTO Order_Item (OrderID, ItemID, Quantity) VALUES
-(1, 2, 1),
-(1, 1, 2),
-(1, 3, 2),
-(1, 13, 1),
-(2, 29, 1),
-(2, 24, 2),
-(3, 9, 1),
-(3, 10, 2),
-(4, 14, 1),
-(4, 9, 2),
-(5, 22, 1),
-(5, 23, 1),
-(6, 17, 1),
-(6, 18, 1),
-(7, 17, 2),
-(7, 18, 1),
-(8, 1, 1),
-(8, 3, 1),
-(9, 11, 1),
-(9, 20, 1);
+(1, 1, 1),
+(1, 2, 2),
+(2, 4, 2),
+(2, 14, 1),
+(3, 30, 1),
+(3, 25, 2),
+(4, 10, 1),
+(4, 11, 2),
+(5, 15, 1),
+(5, 10, 2),
+(6, 23, 1),
+(6, 24, 1),
+(7, 3, 1),
+(7, 2, 1),
+(8, 28, 2),
+(8, 17, 1),
+(9, 1, 1),
+(9, 18, 1),
+(10, 12, 1),
+(10, 21, 1);

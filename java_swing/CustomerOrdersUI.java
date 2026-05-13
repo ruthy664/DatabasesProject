@@ -17,8 +17,8 @@ public class CustomerOrdersUI {
 
     // DATABSE INFORMATION, REVIEW BEFORE LAUNCHING!!!
     String url = "jdbc:mysql://localhost:3306/food_delivery";
-    String user = "root";
-    String password = "password!";
+    String user = DatabaseLoginInfo.user;
+    String password = DatabaseLoginInfo.pass;
 
     JFrame window;
     int customerID;

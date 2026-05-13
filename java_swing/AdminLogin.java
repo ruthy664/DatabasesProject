@@ -8,8 +8,8 @@ public class AdminLogin extends JFrame {
 
     // Database connection details
     String url = "jdbc:mysql://localhost:3306/food_delivery";
-    String user = "root";
-    String password = "Pleasework4!";
+    String user = DatabaseLoginInfo.user; // update username
+    String password = DatabaseLoginInfo.pass; //update password
 
     JTextField usernameField;
     JTextField passwordField;

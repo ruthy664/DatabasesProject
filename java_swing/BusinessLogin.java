@@ -8,8 +8,8 @@ public class BusinessLogin extends JFrame {
 
     // Database connection details
     String url = "jdbc:mysql://localhost:3306/food_delivery";
-    String user = "root"; // CHANGE THIS TO YOUR DATABASE USERNAME
-    String password = "password"; // CHANGE THIS TO YOUR DATABASE PASSWORD
+    String user = DatabaseLoginInfo.user; // CHANGE THIS TO YOUR DATABASE USERNAME
+    String password = DatabaseLoginInfo.pass; // CHANGE THIS TO YOUR DATABASE PASSWORD
 
     JTextField usernameField;
     JTextField passwordField;

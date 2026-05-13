@@ -6,8 +6,8 @@ import javax.swing.text.MaskFormatter;
 
 public class CustomerRegistration extends JFrame {
     String url = "jdbc:mysql://localhost:3306/food_delivery";
-    String user = "root"; // Put your database's username and password here
-    String password = "password"; // Put your database's username and password here
+    String user = DatabaseLoginInfo.user; // Put your database's username and password here
+    String password = DatabaseLoginInfo.pass; // Put your database's username and password here
 
     // ---------- Create a Database Connection ----------
     private Connection getConn() throws Exception {
@@ -71,7 +71,7 @@ public class CustomerRegistration extends JFrame {
         numberField.setPreferredSize(new Dimension(200, 30));
         registrationFields.add(numberField);
 
-        registrationFields.add(new JLabel("Date of birth: "));
+        registrationFields.add(new JLabel("Date of birth (YYYY-MM-DD): "));
         dobField = new JFormattedTextField(createFormatter("####-##-##"));
         dobField.setPreferredSize(new Dimension(200, 30));
         registrationFields.add(dobField);
