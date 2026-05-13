@@ -2,6 +2,11 @@ DROP DATABASE IF EXISTS food_delivery;
 CREATE DATABASE food_delivery;
 USE food_delivery;
 
+CREATE TABLE Delivery_Status(
+	StatusID INT PRIMARY KEY,
+    CurrentStatus VARCHAR(30)
+);
+
 CREATE TABLE Delivery_Personnel(
 EmployeeID INT PRIMARY KEY AUTO_INCREMENT,
 DelivererName VARCHAR(50) NOT NULL,
@@ -67,7 +72,8 @@ ON DELETE CASCADE,
 FOREIGN KEY (PaymentID) REFERENCES Payment_Method(PaymentID)
 ON DELETE RESTRICT,
 FOREIGN KEY (LocationID) REFERENCES Location(LocationID)
-ON DELETE RESTRICT
+ON DELETE RESTRICT,
+FOREIGN KEY (StatusID) REFERENCES Delivery_Status(StatusID) -- CHANGED
 );
 
 CREATE TABLE Delivery(
