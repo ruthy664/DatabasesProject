@@ -12,8 +12,8 @@ public class BusinessUI extends JFrame {
 
     // Database connection details
     String url = "jdbc:mysql://localhost:3306/food_delivery";
-    String user = "root";
-    String password = "password";
+    String user = DatabaseLoginInfo.user;
+    String password = DatabaseLoginInfo.pass;
 
     // Input fields and output area
     JTextArea output;
