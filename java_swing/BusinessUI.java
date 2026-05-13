@@ -167,22 +167,22 @@ public class BusinessUI extends JFrame {
         itemIDField.setPreferredSize(new Dimension(200, 30));
         itemsInput.add(itemIDField);
 
-        itemsInput.add(new JLabel("Menu ID: "));
+        itemsInput.add(new JLabel("Menu ID (the ID of the menu whose items you would like to view. Also needed for update and add): "));
         JTextField itemMenuIDField = new JTextField();
         itemMenuIDField.setPreferredSize(new Dimension(200, 30));
         itemsInput.add(itemMenuIDField);
 
-        itemsInput.add(new JLabel("Item Name: "));
+        itemsInput.add(new JLabel("Item Name (the name of the menu item you are adding or updating): "));
         JTextField itemNameField = new JTextField();
         itemNameField.setPreferredSize(new Dimension(200, 30));
         itemsInput.add(itemNameField);
 
-        itemsInput.add(new JLabel("Item Price: "));
+        itemsInput.add(new JLabel("Item Price (the price of the menu item you are adding or updating): "));
         JTextField itemPriceField = new JTextField();
         itemPriceField.setPreferredSize(new Dimension(200, 30));
         itemsInput.add(itemPriceField);
 
-        itemsInput.add(new JLabel("Item Availability (Enter 0 for unavailable and 1 for available): "));
+        itemsInput.add(new JLabel("Item Availability (Enter 0 for unavailable and 1 for available; needed for add and update): "));
         JTextField itemAvailField = new JTextField();
         itemAvailField.setPreferredSize(new Dimension(200, 30));
         itemsInput.add(itemAvailField);
