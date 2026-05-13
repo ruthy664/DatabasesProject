@@ -301,6 +301,24 @@ public class BusinessUI extends JFrame {
             viewDeliveries(username, deliveryOutput); });
         updateFeeBtn.addActionListener(e -> updateFee(deliveryIDField, feeField, username)); 
 
+
+        // ------------ revenue ---------------
+        JPanel page5 = new JPanel(new BorderLayout());
+        JTextArea revOutput = new JTextArea();
+        revOutput.setEditable(false);
+        revOutput.setBorder(new EmptyBorder(100, 0, 0, 0));
+        page5.add(revOutput, BorderLayout.CENTER);
+        JPanel revenueButtons = new JPanel(new GridLayout(1,2));
+        JButton perOrderBtn = new JButton("Display Revenue Per Delivery");
+        JButton totalRevBtn = new JButton("Display Total Revenue From Deliveries");
+        revenueButtons.add(perOrderBtn);
+        revenueButtons.add(totalRevBtn);
+        page5.add(revenueButtons, BorderLayout.NORTH);
+        perOrderBtn.addActionListener(e -> revPerOrder(username, revOutput)); 
+        totalRevBtn.addActionListener(e -> totalRev(username, revOutput)); 
+
+
+
         // ----------------------------------------------------------------------------------------------
 
         // Add the tabs to the JTabbedPane
@@ -308,6 +326,7 @@ public class BusinessUI extends JFrame {
         tabPanel.addTab("Menu Items", page2);
         tabPanel.addTab("Orders", page3);
         tabPanel.addTab("Deliveries", page4);
+        tabPanel.addTab("Revenue", page5);
 
         // Add the JTabbedPane to the JFrame's content
         window.add(tabPanel);
@@ -932,13 +951,13 @@ public class BusinessUI extends JFrame {
     // viewing all of the orders for a business
     private void viewOrders(String username, JTextArea ordersOutput) {
          int businessID = businessID(username);
-
+        boolean found = false;
         try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT O.OrderID, O.OrderDate, C.CustomerName, O.StatusID, P.PaymentMethod, L.Address FROM Orders O JOIN Customer C ON O.CustomerID = C.CustomerID JOIN Payment_Method P ON O.PaymentID = P.PaymentID JOIN Location L ON O.LocationID = L.LocationID WHERE O.BusinessID = ? ORDER BY O.StatusID")) {
             ps.setInt(1, businessID);
             ResultSet rs = ps.executeQuery();
-            
             // Loop through result rows
             while (rs.next()) {
+                found = true;
                 ordersOutput.append("OrderID: " +
                         rs.getInt("OrderID") + " | OrderDate: "
                         + rs.getDate("OrderDate") + " | CustomerName: "
@@ -959,18 +978,22 @@ public class BusinessUI extends JFrame {
                             + rs2.getDouble("TotalPrice") + "\n"
                     );
             }
+           
         ordersOutput.append("----------------------------------------------------------------" + "\n");
 
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(window, ex.getMessage());
                 }
-
             }
              
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(window, ex.getMessage());
         }
+
+        if(!found) {
+                ordersOutput.setText("No orders to display");
+            }
 
     }
 
@@ -1218,9 +1241,10 @@ public class BusinessUI extends JFrame {
         try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT D.DeliveryID, C.CustomerName, D.EmployeeID, O.OrderDate, D.DeliveryFee FROM Delivery D JOIN Orders O ON D.OrderID = O.OrderID JOIN Customer C ON C.CustomerID = O.CustomerID WHERE O.BusinessID = ? ORDER BY O.OrderDate;")) {
             ps.setInt(1, businessID);
             ResultSet rs = ps.executeQuery();
-            
+            boolean found = false;
             // Loop through result rows
             while (rs.next()) {
+                found = true;
                 deliveryOutput.append("DeliveryID: " +
                         rs.getInt("DeliveryID") + " | CustomerName: "
                         + rs.getString("CustomerName") + " | EmployeeID: "
@@ -1228,7 +1252,11 @@ public class BusinessUI extends JFrame {
                         + rs.getDate("OrderDate") + " | DeliveryFee: "
                         + rs.getDouble("DeliveryFee")  + "\n"
                 );
-            }     
+            }    
+            
+            if(!found) {
+                deliveryOutput.setText("No deliveries to display. Orders must be in progress for there to be a delivery associated with them.");
+            }
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(window, ex.getMessage());
@@ -1315,11 +1343,49 @@ public class BusinessUI extends JFrame {
             JOptionPane.showMessageDialog(window, ex.getMessage());
         }
     }
-    
 
-    // ---------- Main Method ----------
-    public static void main(String[] args) {
-        new LaunchPage();
- 
+    private void revPerOrder(String username, JTextArea revOutput) {
+         int businessID = businessID(username);
+         revOutput.setText("");
+
+        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT OI.OrderID, SUM(MI.ItemPrice*OI.Quantity)+D.DeliveryFee AS OrderCost FROM Order_Item OI JOIN Menu_Item MI ON MI.ItemID = OI.ItemID JOIN Menu M ON M.MenuID = MI.MenuID JOIN Delivery D ON D.OrderID = OI.OrderID WHERE M.BusinessID = ? GROUP BY OI.OrderID, D.DeliveryFee")) {
+            ps.setInt(1, businessID);
+            ResultSet rs = ps.executeQuery();
+            
+            // Loop through result rows
+            while (rs.next()) {
+                revOutput.append("OrderID: " +
+                        rs.getInt("OrderID") + " | OrderCost: "
+                        + rs.getDouble("OrderCost") + "\n"
+                ); }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex.getMessage());
+        }
+
     }
+
+    private void totalRev(String username, JTextArea revOutput) {
+        int businessID = businessID(username);
+         revOutput.setText("");
+
+        try (Connection conn = getConn(); PreparedStatement ps = conn.prepareStatement("SELECT SUM(OrderCost) AS TotalRevenue FROM (SELECT OI.OrderID, SUM(MI.ItemPrice*OI.Quantity)+D.DeliveryFee AS OrderCost FROM Order_Item OI JOIN Menu_Item MI ON MI.ItemID = OI.ItemID JOIN Menu M ON M.MenuID = MI.MenuID JOIN Delivery D ON D.OrderID = OI.OrderID WHERE M.BusinessID = ? GROUP BY OI.OrderID, D.Deliveryfee) AS OrderTotals")) {
+            ps.setInt(1, businessID);
+            ResultSet rs = ps.executeQuery();
+            
+            // Loop through result rows
+            while (rs.next()) {
+                revOutput.append("Total Revenue: " +
+                        rs.getDouble("TotalRevenue") + "\n"
+                ); }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(window, ex.getMessage());
+        }
+        /*
+        SELECT SUM(OrderCost) AS TotalRevenue FROM (SELECT OI.OrderID, SUM(MI.ItemPrice*OI.Quantity)+D.DeliveryFee AS OrderCost FROM Order_Item OI JOIN Menu_Item MI ON MI.ItemID = OI.ItemID JOIN Menu M ON M.MenuID = MI.MenuID JOIN Delivery D ON D.OrderID = OI.OrderID WHERE M.BusinessID = ? GROUP BY OI.OrderID, D.Deliveryfee) AS OrderTotals;
+
+        */
+    }
+    
 }

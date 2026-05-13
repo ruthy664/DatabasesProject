@@ -11,7 +11,7 @@ public class LaunchPage extends JFrame {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Close operation when the window is closed
         window.setSize(500, 400);
         window.add(new JLabel("Pleae select which user you would like to log-in as"), BorderLayout.NORTH);
-        loginFields.setLayout(new GridLayout(4,1,0,10));
+        loginFields.setLayout(new GridLayout(6,1,0,10));
         loginFields.setBorder(new EmptyBorder(50, 10, 10, 10));
 
         // possible stakeholders
@@ -23,6 +23,9 @@ public class LaunchPage extends JFrame {
         loginFields.add(driver);
         JButton admin = new JButton("Admin");
         loginFields.add(admin);
+        loginFields.add(new JLabel("Incorrect Database Credentials? Go back and enter them again."));
+        JButton backButton = new JButton("Back");
+        loginFields.add(backButton);
         
         JPanel holder = new JPanel(new FlowLayout());
         holder.add(loginFields);
@@ -50,10 +53,13 @@ public class LaunchPage extends JFrame {
             new AdminLogin();
             // Add admin log-in page call here
         });
+
+         backButton.addActionListener(e -> {
+            window.setVisible(false);
+            new DatabaseLoginInfo();
+        });
     }
 
-    public static void main(String[] args) {
-        new LaunchPage();
-    }
+    
 }
 

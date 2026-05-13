@@ -37,8 +37,6 @@ public class AdminUI extends JFrame {
 
         window.setLayout(new BorderLayout());
 
-        // Create a JTabbedPane, which will hold the tabs
-        JTabbedPane tabPanel = new JTabbedPane();
 
         JPanel page1 = new JPanel(new BorderLayout());
 
@@ -62,6 +60,23 @@ public class AdminUI extends JFrame {
         buttons.add(deleteDriver);
         menuHolder.add(buttons);
         page1.add(menuHolder, BorderLayout.NORTH);
+
+         // logout button
+        JPanel buttonHandling = new JPanel(new GridLayout(1, 7));
+        buttonHandling.add(new JLabel(""));
+        buttonHandling.add(new JLabel(""));
+        buttonHandling.add(new JLabel(""));
+        buttonHandling.add(new JLabel(""));
+        buttonHandling.add(new JLabel(""));
+        buttonHandling.add(new JLabel(""));
+        JButton logout = new JButton("Log out");
+        logout.setPreferredSize(new Dimension(90, 20));
+        buttonHandling.add(logout);
+        window.add(buttonHandling, BorderLayout.NORTH);
+        logout.addActionListener(e -> {
+            window.setVisible(false);
+            new LaunchPage(); // default log-in (launch) page
+        }); 
 
         JTextArea adminOutput = new JTextArea();
         adminOutput.setEditable(false);                      // User cannot type here
