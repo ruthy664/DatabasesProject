@@ -14,8 +14,8 @@ public class AdminUI extends JFrame {
 
     // Database connection details
     String url = "jdbc:mysql://localhost:3306/food_delivery";
-    String user = "root"; //update username
-    String password = "password"; //update password
+    String user = DatabaseLoginInfo.user; //update username
+    String password = DatabaseLoginInfo.pass; //update password
 
     JFrame window;
 
