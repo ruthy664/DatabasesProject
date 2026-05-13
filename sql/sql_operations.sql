@@ -27,12 +27,12 @@ INSERT INTO Payment_Method (PaymentMethod)
 VALUES ('Zelle');
 
 -- Add an order
-INSERT INTO Orders (CustomerID, BusinessID, PaymentID, OrderDate)
-VALUES (4, 0, 1, '2026-12-03 12:45:55');
+INSERT INTO Orders (CustomerID, BusinessID, PaymentID, OrderDate, StatusID, LocationID)
+VALUES (4, 2, 1, '2026-12-03', 3, 2);
 
 -- Add a delivery for an order
-INSERT INTO Delivery (OrderID, EmployeeID, LocationID, StatusID, DeliveryFee) 
-VALUES (7, 4, 3, 1, 4.99);
+INSERT INTO Delivery (OrderID, EmployeeID, DeliveryFee)
+VALUES (7, 4, 4.99);
 
 -- Add a menu
 INSERT INTO Menu (BusinessID, MenuName) VALUES (2, 'Kids');
@@ -50,7 +50,7 @@ INSERT INTO Order_Item (OrderID, ItemID, Quantity) VALUES (2, 2, 2);
 -- Address
 UPDATE Location
 SET Address = '3333 Concord Grapard'
-WHERE LocationID = 0;
+WHERE LocationID = 3;
 
 -- *** Update info about delivery personnel ***
 -- Name
@@ -139,7 +139,7 @@ WHERE BusinessID = 7;
 -- *** Update a payment method type ***
 UPDATE Payment_Method
 SET PaymentMethod = 'credit card'
-WHERE PaymentID = 0;
+WHERE PaymentID = 1;
 
 -- *** Update order info ***
 -- Update business for an order
@@ -154,20 +154,20 @@ WHERE OrderID = 5;
 UPDATE Orders
 SET OrderDate = '2026-12-05'
 WHERE OrderID = 2;
+-- Update location
+UPDATE Orders
+SET LocationID = 7
+WHERE OrderID = 4;
+-- Update the status
+UPDATE Orders
+SET StatusID = 3
+WHERE OrderID = 5;
 
 -- *** Update info about a delivery ***
 -- Update delivery personnel
 UPDATE Delivery
 SET EmployeeID = 4
 WHERE DeliveryID = 2;
--- Update location
-UPDATE Delivery
-SET LocationID = 7
-WHERE DeliveryID = 4;
--- Update the status
-UPDATE Delivery
-SET StatusID = 3
-WHERE DeliveryID = 5;
 -- Update the delivery fee
 UPDATE Delivery
 SET DeliveryFee = 6.00
@@ -217,7 +217,7 @@ WHERE BusinessID = 9;
 
 -- Delete a payment method (RESTRICT via Orders)
 DELETE FROM Payment_Method
-WHERE PaymentID = 0;
+WHERE PaymentID = 1;
 
 -- Delete an order (CASCADE → Delivery, Order_Item)
 DELETE FROM Orders
@@ -272,7 +272,7 @@ SELECT DISTINCT B.BusinessID, B.BusinessName, B.Cuisine, B.PhoneNumber, L.Addres
 FROM Business B
 JOIN Location L ON L.LocationID = B.LocationID
 JOIN Orders O ON O.BusinessID = B.BusinessID
-WHERE O.CustomerID = 0
+WHERE O.CustomerID = 1
 ORDER BY B.BusinessName;
 
 -- View all customer locations
@@ -298,75 +298,74 @@ ORDER BY OrderDate;
 -- Find information of all order deliveries
 SELECT D.DeliveryID, D.OrderID, C.CustomerName, DP.DelivererName, L.Address AS DeliveryLocation, DS.CurrentStatus, D.DeliveryFee, O.OrderDate
 FROM Delivery D
-LEFT JOIN Delivery_Personnel DP ON DP.EmployeeID = D.EmployeeID
-LEFT JOIN Delivery_Status DS ON DS.StatusID = D.StatusID
-LEFT join Location L ON L.LocationID = D.LocationID
 LEFT JOIN Orders O ON O.OrderID = D.OrderID
+LEFT JOIN Delivery_Personnel DP ON DP.EmployeeID = D.EmployeeID
+LEFT JOIN Delivery_Status DS ON DS.StatusID = O.StatusID
+LEFT JOIN Location L ON L.LocationID = O.LocationID
 LEFT JOIN Customer C ON C.CustomerID = O.CustomerID
 ORDER BY O.OrderDate;
 
 -- Find information of all deliveries belonging to a business
 SELECT D.DeliveryID, D.OrderID, C.CustomerName, DP.DelivererName, L.Address AS DeliveryLocation, DS.CurrentStatus, D.DeliveryFee, O.OrderDate
 FROM Delivery D
-LEFT JOIN Delivery_Personnel DP ON DP.EmployeeID = D.EmployeeID
-LEFT JOIN Delivery_Status DS ON DS.StatusID = D.StatusID
-LEFT join Location L ON L.LocationID = D.LocationID
 LEFT JOIN Orders O ON O.OrderID = D.OrderID
+LEFT JOIN Delivery_Personnel DP ON DP.EmployeeID = D.EmployeeID
+LEFT JOIN Delivery_Status DS ON DS.StatusID = O.StatusID
+LEFT join Location L ON L.LocationID = O.LocationID
 LEFT JOIN Customer C ON C.CustomerID = O.CustomerID
-WHERE O.BusinessID = 0
+WHERE O.BusinessID = 1
 ORDER BY O.OrderDate;
 
 -- Find information of all orders belonging to a costumer
 SELECT D.DeliveryID, D.OrderID, C.CustomerName, DP.DelivererName, L.Address AS DeliveryLocation, DS.CurrentStatus, D.DeliveryFee, O.OrderDate
 FROM Delivery D
-LEFT JOIN Delivery_Personnel DP ON DP.EmployeeID = D.EmployeeID
-LEFT JOIN Delivery_Status DS ON DS.StatusID = D.StatusID
-LEFT join Location L ON L.LocationID = D.LocationID
 LEFT JOIN Orders O ON O.OrderID = D.OrderID
+LEFT JOIN Delivery_Personnel DP ON DP.EmployeeID = D.EmployeeID
+LEFT JOIN Delivery_Status DS ON DS.StatusID = O.StatusID
+LEFT join Location L ON L.LocationID = O.LocationID
 LEFT JOIN Customer C ON C.CustomerID = O.CustomerID
-WHERE O.CustomerID = 0
+WHERE O.CustomerID = 1
 ORDER BY O.OrderDate;
 
 -- Find all orders belonging to a customer
-SELECT OrderID
-FROM Orders
-WHERE CustomerID = 0;
+SELECT O.OrderID
+FROM Orders O
+WHERE CustomerID = 1;
 
 -- Find status of all orders belonging to a business
-SELECT O.OrderID, DS.CurrentStatus
+SELECT O.OrderID, O.StatusID
 FROM Orders O
-JOIN Delivery D ON D.OrderID = O.OrderID
-JOIN Delivery_Status DS ON DS.StatusID = D.StatusID
-WHERE O.BusinessID = 0;
+WHERE O.BusinessID = 1;
 
 -- Find status of all orders belonging to a costumer
 SELECT O.OrderID, DS.CurrentStatus
 FROM Orders O
 JOIN Delivery D ON D.OrderID = O.OrderID
-JOIN Delivery_Status DS ON DS.StatusID = D.StatusID
-WHERE O.CustomerID = 0;
+JOIN Delivery_Status DS ON DS.StatusID = O.StatusID
+WHERE O.CustomerID = 1;
 
 -- Find status of all orders belonging to an employee
 SELECT O.OrderID, DS.CurrentStatus
 FROM Orders O
 JOIN Delivery D ON D.OrderID = O.OrderID
-JOIN Delivery_Status DS ON DS.StatusID = D.StatusID
-WHERE D.EmployeeID = 0;
+JOIN Delivery_Status DS ON DS.StatusID = O.StatusID
+WHERE D.EmployeeID = 1;
 
 -- Find information of a specific delivery
 SELECT D.DeliveryID, D.OrderID, C.CustomerName, DP.DelivererName, L.Address AS DeliveryLocation, DS.CurrentStatus, D.DeliveryFee, O.OrderDate
 FROM Delivery D
-LEFT JOIN Delivery_Personnel DP ON DP.EmployeeID = D.EmployeeID
-LEFT JOIN Delivery_Status DS ON DS.StatusID = D.StatusID
-LEFT join Location L ON L.LocationID = D.LocationID
 LEFT JOIN Orders O ON O.OrderID = D.OrderID
+LEFT JOIN Delivery_Personnel DP ON DP.EmployeeID = D.EmployeeID
+LEFT JOIN Delivery_Status DS ON DS.StatusID = O.StatusID
+LEFT join Location L ON L.LocationID = O.LocationID
 LEFT JOIN Customer C ON C.CustomerID = O.CustomerID
 WHERE D.DeliveryID = 2;
 
 -- Find the status of an specific Delivery
 SELECT DS.CurrentStatus
 FROM Delivery D
-JOIN Delivery_Status DS ON D.StatusID = DS.StatusID
+JOIN Orders O ON D.OrderID = O.OrderID
+JOIN Delivery_Status DS ON O.StatusID = DS.StatusID
 WHERE D.DeliveryID = 3;
 
 -- Find out the number of deliveries done by delivery personnel
