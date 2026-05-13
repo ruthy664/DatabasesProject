@@ -161,7 +161,7 @@ INSERT INTO Order_Item (OrderID, ItemID, Quantity) VALUES
 (1, 2, 2),
 (2, 4, 2),
 (2, 14, 1),
-(3, 30, 1),
+(3, 30, 1), 
 (3, 25, 2),
 (4, 10, 1),
 (4, 11, 2),
@@ -177,3 +177,11 @@ INSERT INTO Order_Item (OrderID, ItemID, Quantity) VALUES
 (9, 18, 1),
 (10, 12, 1),
 (10, 21, 1);
+
+INSERT INTO Delivery_Status (StatusID, CurrentStatus) VALUES
+(1, 'pending'),
+(2, 'placed'),
+(3, 'arriving'),
+(4, 'arrived'),
+(5, 'canceled'),
+(6, 'delayed');
